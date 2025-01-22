@@ -9,12 +9,15 @@ from flask_migrate import Migrate
 from flask_restful import Api, Resource
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
+from authlib.integrations.flask_client import OAuth
 
 # Local imports
 from config import app, db, api
 
 # Add your model imports
-from models import db
+from models import db, User
+
+from api_key import *
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
@@ -33,7 +36,11 @@ api = Api(app)
 
 CORS(app)
 
-# Views go here!
+oauth = OAuth(app)
+
+google = oauth.register()
+
+
 @app.route('/')
 def index():
     return '<h1>Project Server</h1>'
