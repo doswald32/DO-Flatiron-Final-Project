@@ -1,41 +1,63 @@
 import React, { useState } from "react";
 import logo from "../Assets/jaunt_logo.png";
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 function CreateAccount() {
     
     const [newUserData, setNewUserData] = useState({
-        firstName: "",
-        lastName: "",
-        newUserName: "",
-        newPassword: "",
-        email: "",
-        phone: "",
+        first_name: "",
+        last_name: "",
+        username: "",
+        password: "",
       });
 
-      function onChangeFirst(e) {
-        setNewUserData({ ...newUserData, firstName: e.target.value })
+    const formSchema = Yup.object({
+      first_name: Yup.string().required("First name is required."),
+      last_name: Yup.string().required("Last name is required."),
+      username: Yup.string().required("Username is required."),
+      password: Yup.string().required("Password is required"),
+    })
+
+    const formik = useFormik({
+      initialValues: {
+        first_name: "",
+        last_name: "",
+        username: "",
+        password: "",
+      },
+      validationSchema: formSchema,
+      onSubmit: (values) => {
+        fetch('http://127.0.0.1:5555/create_account', {
+          method: "POST", 
+          headers: {
+            "Content-Type": "application/json",
+          }, 
+          body: JSON.stringify(values, null, 2)
+        })
+        .then((r) => r.json())
+        .then((data) => console.log(data))
       }
-    
-      function onChangeLast(e) {
-        setNewUserData({ ...newUserData, lastName: e.target.value })
-      }
-    
-      function onChangeNewUsername(e) {
-        setNewUserData({ ...newUserData, newUserName: e.target.value })
-      }
-    
-      function onChangeNewPassword(e) {
-        setNewUserData({ ...newUserData, newPassword: e.target.value })
-      }
-    
-      function onChangeEmail(e) {
-        setNewUserData({ ...newUserData, email: e.target.value })
-      }
-    
-      function onChangePhone(e) {
-        setNewUserData({ ...newUserData, phone: e.target.value })
-      }
+    })
+
+    // function onChangeFirst(e) {
+    //   setNewUserData({ ...newUserData, first_name: e.target.value })
+    // }
+  
+    // function onChangeLast(e) {
+    //   setNewUserData({ ...newUserData, last_name: e.target.value })
+    // }
+  
+    // function onChangeNewUsername(e) {
+    //   setNewUserData({ ...newUserData, username: e.target.value })
+    // }
+  
+    // function onChangeNewPassword(e) {
+    //   setNewUserData({ ...newUserData, password: e.target.value })
+    // }
+
+    console.log(formik.values)
 
     return (
         <main className="login-container">
@@ -45,14 +67,12 @@ function CreateAccount() {
             <div className="login-window-border">
                 <div className="login-window">
                     <h1>Create an Account</h1>
-                    <form className="create-account-form">
-                        <input className="create-account-first" type="text" placeholder="First Name" value={newUserData.firstName} onChange={onChangeFirst}/>
-                        <input className="create-account-last" type="text" placeholder="Last Name" value={newUserData.lastName} onChange={onChangeLast}/>
-                        <input className="create-account-username" type="text" placeholder="Username" value={newUserData.newUsername} onChange={onChangeNewUsername}/>
-                        <input className="create-account-password" type="password" placeholder="Password" value={newUserData.newPassword} onChange={onChangeNewPassword}/>
-                        <input className="create-account-email" type="text" placeholder="Email" value={newUserData.email} onChange={onChangeEmail}/>
-                        <input className="create-account-phone" type="tel" placeholder="Phone Number" value={newUserData.phone} onChange={onChangePhone}/>
-                        <button className="login-buttons">Create Account</button>
+                    <form className="create-account-form" onSubmit={formik.handleSubmit}>
+                        <input id="first_name" name="first_name" placeholder="First Name" value={formik.values.first_name} onChange={formik.handleChange}/>
+                        <input id="last_name" name="last_name" placeholder="Last Name" value={formik.values.last_name} onChange={formik.handleChange}/>
+                        <input id="username" name="username" placeholder="Username" value={formik.values.username} onChange={formik.handleChange}/>
+                        <input id="password" name="password" type="password" placeholder="Password" value={formik.values.password} onChange={formik.handleChange}/>
+                        <button type="submit" className="login-buttons">Create Account</button>
                         <hr></hr>
                         <span className="login-text">Already have an account?</span>
                         <Link to="/login"><button className="login-buttons">Sign In</button></Link>
