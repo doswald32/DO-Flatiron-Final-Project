@@ -1,17 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import logo from "../Assets/jaunt_logo.png";
-import { Link } from "react-router-dom";
+import { Link, useOutletContext, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
 function CreateAccount() {
-    
-    const [newUserData, setNewUserData] = useState({
-        first_name: "",
-        last_name: "",
-        username: "",
-        password: "",
-      });
+
+  const { setUser } = useOutletContext();
+  const navigate = useNavigate();
 
     const formSchema = Yup.object({
       first_name: Yup.string().required("First name is required."),
@@ -28,8 +24,8 @@ function CreateAccount() {
         password: "",
       },
       validationSchema: formSchema,
-      onSubmit: (values) => {
-        fetch('http://127.0.0.1:5555/create_account', {
+      onSubmit: (values, { resetForm }) => {
+        fetch('/create_account', {
           method: "POST", 
           headers: {
             "Content-Type": "application/json",
@@ -37,27 +33,14 @@ function CreateAccount() {
           body: JSON.stringify(values, null, 2)
         })
         .then((r) => r.json())
-        .then((data) => console.log(data))
+        .then((data) => {
+          setUser(data);
+          alert("Account successfully created!");
+          navigate("/");
+        });
+        resetForm();
       }
     })
-
-    // function onChangeFirst(e) {
-    //   setNewUserData({ ...newUserData, first_name: e.target.value })
-    // }
-  
-    // function onChangeLast(e) {
-    //   setNewUserData({ ...newUserData, last_name: e.target.value })
-    // }
-  
-    // function onChangeNewUsername(e) {
-    //   setNewUserData({ ...newUserData, username: e.target.value })
-    // }
-  
-    // function onChangeNewPassword(e) {
-    //   setNewUserData({ ...newUserData, password: e.target.value })
-    // }
-
-    console.log(formik.values)
 
     return (
         <main className="login-container">

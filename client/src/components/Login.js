@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import logo from "../Assets/jaunt_logo.png";
-import { Link } from "react-router-dom";
+import { Link, useOutletContext, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
 
-function Login({ onLogin }) {
-    const [username, setUsername] = useState("");
-    // const [password, setPassword] = useState("");
+function Login() {
+
+    const { setUser } = useOutletContext();
+    const navigate = useNavigate();
 
     const formSchema = Yup.object({
         username: Yup.string().required("Username is required."),
@@ -20,27 +21,30 @@ function Login({ onLogin }) {
             password: "",
         },
         validationSchema: formSchema,
-        onSubmit: (values, {resetForm }) => {
-            fetch('http://127.0.0.1:5555/login', {
+        onSubmit: (values) => {
+            fetch('/login', {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(values, null, 2),
             })
-            .then((r) => r.json())
-            .then((user) => onLogin(user))
+            .then((r) => {
+                if (r.ok) {
+                    return r.json();
+                } else {
+                    throw new Error("Invalid credentials");
+                }
+            })
+            .then((user) => {
+                setUser(user);
+                navigate("/");
+            })
+            .catch((err) => {
+                console.error("Login failed:", err);
+            })
         }
     })
-
-    // function onChangeUsername(e) {.
-
-    //     setUsername(e.target.value)
-    //   }
-    
-    // function onChangePassword(e) {
-    //     setPassword(e.target.value)
-    //   }
 
     return (
         <main className="login-container">
@@ -49,10 +53,10 @@ function Login({ onLogin }) {
                 <div className="login-window">
                     <h1>Sign in</h1>
                     <form className="login-form" onSubmit={formik.handleSubmit}>
-                        <input className="login-username" type="text" placeholder="Username or Email" value={formik.values.username} onChange={formik.handleChange}/>
-                        <input className="login-password" type="password" placeholder="Password" value={formik.values.password} onChange={formik.handleChange}/>
+                        <input id="username" name="username" placeholder="Username" value={formik.values.username} onChange={formik.handleChange}/>
+                        <input id="password" name="password" type="password" placeholder="Password" value={formik.values.password} onChange={formik.handleChange}/>
                         <p>Forgot password?</p>
-                        <button className="login-buttons">Log In</button>
+                        <button type="submit" className="login-buttons">Log In</button>
                         <hr></hr>
                         <span className="login-text">New to Jaunt? Click below to create an account!</span>
                         <Link to="/createAccount"><button className="login-buttons">Create Account</button></Link>
