@@ -1,11 +1,7 @@
-import { useOutletContext } from 'react-router-dom';
+// import { useOutletContext } from 'react-router-dom';
 import NavBar from "./NavBar";
 
 function Home() {
-
-    const { user } = useOutletContext();
-
-    console.log(user)
 
     return (
         <main>

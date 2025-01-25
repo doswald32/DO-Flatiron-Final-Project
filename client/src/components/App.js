@@ -22,6 +22,8 @@ function App() {
       .catch((error) => console.error("Error checking session:", error))
   }, [navigate]);
 
+  console.log("App user:", user)
+
   return (
     <>
       <div className="App">
