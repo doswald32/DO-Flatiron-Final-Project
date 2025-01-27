@@ -24,9 +24,6 @@ oauth = OAuth(app)
 
 # google = oauth.register()
 
-@app.route("/debug")
-def debug_session():
-    return dict(session), 200
 
 @app.route('/test_session')
 def test_session():
@@ -41,15 +38,6 @@ def clear_session():
     session.clear()
     print("Session cleared.")
     return "Session cleared"
-
-@app.route("/check_cookie")
-def check_cookie():
-    ipdb.set_trace()
-    cookies = request.cookies
-    if cookies:
-        return cookies.to_dict()
-    else:
-        return "No current cookies."
 
 @app.route('/')
 def index():
