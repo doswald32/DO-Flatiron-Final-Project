@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import logo from "../Assets/jaunt_logo.png";
 import { Link, useOutletContext, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
@@ -6,45 +6,47 @@ import * as Yup from "yup";
 
 
 function Login() {
-
     const { setUser } = useOutletContext();
     const navigate = useNavigate();
-
+    const [error, setError] = useState(null); 
+  
     const formSchema = Yup.object({
-        username: Yup.string().required("Username is required."),
-        password: Yup.string()
-    })
-
+      username: Yup.string().required("Username is required."),
+      password: Yup.string().required("Password is required."),
+    });
+  
     const formik = useFormik({
-        initialValues: {
-            username: "",
-            password: "",
-        },
-        validationSchema: formSchema,
-        onSubmit: (values) => {
-            fetch('/login', {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(values, null, 2),
-            })
-            .then((r) => {
-                if (r.ok) {
-                    return r.json();
-                } else {
-                    throw new Error("Invalid credentials");
-                }
-            })
-            .then((user) => {
-                setUser(user);
-                navigate("/");
-            })
-            .catch((err) => {
-                console.error("Login failed:", err);
-            })
-        }
-    })
+      initialValues: {
+        username: "",
+        password: "",
+      },
+      validationSchema: formSchema,
+      onSubmit: (values) => {
+        fetch("/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(values),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Invalid credentials");
+            }
+            return response.json();
+          })
+          .then((user) => {
+            setUser(user); 
+            setError(null); 
+            navigate("/"); 
+          })
+          .catch((err) => {
+            console.error("Login failed:", err);
+            setError("Invalid username or password. Please try again."); 
+          });
+      },
+    });
 
     return (
         <main className="login-container">

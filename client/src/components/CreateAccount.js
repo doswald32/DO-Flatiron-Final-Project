@@ -36,7 +36,7 @@ function CreateAccount() {
         .then((data) => {
           setUser(data);
           alert("Account successfully created!");
-          navigate("/");
+          navigate("/login");
         });
         resetForm();
       }

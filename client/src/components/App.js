@@ -1,35 +1,35 @@
 import "../App.css";
-import React, { useState, useEffect } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Outlet } from "react-router-dom";
 
 function App() {
-
   const [user, setUser] = useState(null);
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/check_session")
-      .then((r) => {
-        if (r.ok) {
-          r.json().then((data) => {
-            setUser(data);
-            navigate("/"); 
-          });
-        } else {
-          navigate("/login"); 
+    fetch("/check_session", {
+      credentials: "include",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
         }
+        return response.json();
       })
-      .catch((error) => console.error("Error checking session:", error))
-  }, [navigate]);
-
-  console.log("App user:", user)
+      .then((data) => {
+        setUser(data);
+        setLoading(false); 
+      })
+      .catch((err) => {
+        console.error("Error fetching session:", err);
+        setLoading(false);
+      });
+  }, []);
 
   return (
-    <>
-      <div className="App">
-        <Outlet context={{ user, setUser }}/>
-      </div>
-    </>
+    <div className="App">
+      <Outlet context={{ user, setUser, loading }} />
+    </div>
   );
 }
 

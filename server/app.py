@@ -24,13 +24,32 @@ oauth = OAuth(app)
 
 # google = oauth.register()
 
+@app.route("/debug")
+def debug_session():
+    return dict(session), 200
+
 @app.route('/test_session')
 def test_session():
-    ipdb.set_trace()
+    print("Inside Test Session:", session)
     if 'user_id' not in session:
-        session['user_id'] = 123  # Dummy ID
-        return "Session initialized."
+        return "No current session initialized."
     return f"Session persists with user_id: {session['user_id']}."
+
+@app.route("/clear")
+def clear_session():
+    print("Clear:", session)
+    session.clear()
+    print("Session cleared.")
+    return "Session cleared"
+
+@app.route("/check_cookie")
+def check_cookie():
+    ipdb.set_trace()
+    cookies = request.cookies
+    if cookies:
+        return cookies.to_dict()
+    else:
+        return "No current cookies."
 
 @app.route('/')
 def index():
@@ -45,50 +64,62 @@ class UserResource(Resource):
 
 class CreateAccountResource(Resource):
     def post(self):
-
+        
         data = request.get_json()
+
         user = User(
             first_name = data['first_name'],
             last_name = data['last_name'],
             username = data['username']
         )
         user.password_hash = data['password']
+        
         db.session.add(user)
         db.session.commit()
-        ret_user = User.query.filter(User.username == user.username).first()
-        session['user_id'] = ret_user.id
-        ipdb.set_trace()
 
-        return ret_user.to_dict(), 201
+        response = make_response(jsonify(user.to_dict()), 201)
+
+        return response
 
 class LoginResource(Resource):
     def post(self):
-        username = request.get_json()['username']
-        password = request.get_json()['password']
+        data = request.get_json()
+        username = data.get('username')
+        password = data.get('password')
+
         user = User.query.filter(User.username == username).first()
-        if user:
-            if user.password_hash == password:
-                session['user_id'] = user.id
-                return user.to_dict()
-            else:
-                return {'message': "Incorrect password"}, 401
+        if user and user.authenticate(password): 
+            session['user_id'] = user.id
+            session.permanent = True  
+            response = make_response(user.to_dict(), 200)
+            response.set_cookie("user_id", str(user.id), httponly=True, samesite="Lax")
+            return response
         else:
-            return {'message': 'Username not found'}, 401
-    
+            return {"error": "Invalid username or password"}, 401
+        
+        
 class CheckSession(Resource):
     def get(self):
-        user = User.query.filter(User.id == session.get('user_id')).first()
-        if user:
-            return make_response(jsonify(user.to_dict()), 200)
-        else: 
-            return {'message': '401: Not Authorized'}, 401
+        user_id = session.get('user_id')
+        if user_id:
+            user = User.query.filter(User.id == user_id).first()
+            if user:
+                return user.to_dict(), 200
+            else:
+                return {"error": "User not found."}, 404
+        else:
+            return {"error": "Unauthenticated"}, 401
         
 
 class LogoutResource(Resource):
     def delete(self):
-        ipdb.set_trace()
+
         session.clear()
-        return {'message': '204: No Content'}, 204
+
+        response = make_response({"message": "Successfully logged out"}, 200)
+        response.set_cookie("user_id", "", expires=0)  
+
+        return response
     
 
     

@@ -9,7 +9,11 @@ import CreateAccount from "./components/CreateAccount";
 
 
 function OutletWrapper({ children }) {
-    const { user } = useOutletContext();
+    const { user, loading } = useOutletContext();
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     if (!user) {
         return <Navigate to="/login" replace />
