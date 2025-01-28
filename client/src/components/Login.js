@@ -14,6 +14,11 @@ function Login() {
       username: Yup.string().required("Username is required."),
       password: Yup.string().required("Password is required."),
     });
+
+    function handleGoogleLogin() {
+      window.location.href = 'http://127.0.0.1:5555/login/google';
+    }
+
   
     const formik = useFormik({
       initialValues: {
@@ -73,6 +78,7 @@ function Login() {
                           onChange={formik.handleChange}
                         />
                         <button type="submit" className="login-buttons">Log In</button>
+                        <button className="login-google" value="Login with Google" onClick={handleGoogleLogin}>Log In Using Google</button>
                         <hr></hr>
                         <span className="login-text">New to Jaunt? Click below to create an account!</span>
                         <Link to="/createAccount"><button className="login-buttons">Create Account</button></Link>

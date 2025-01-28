@@ -14,6 +14,7 @@ function CreateAccount() {
       last_name: Yup.string().required("Last name is required."),
       username: Yup.string().required("Username is required."),
       password: Yup.string().required("Password is required"),
+      email: Yup.string().required("Email is required."),
     })
 
     const formik = useFormik({
@@ -22,6 +23,7 @@ function CreateAccount() {
         last_name: "",
         username: "",
         password: "",
+        email: "",
       },
       validationSchema: formSchema,
       onSubmit: (values, { resetForm }) => {
@@ -55,6 +57,7 @@ function CreateAccount() {
                         <input id="last_name" name="last_name" placeholder="Last Name" value={formik.values.last_name} onChange={formik.handleChange}/>
                         <input id="username" name="username" placeholder="Username" value={formik.values.username} onChange={formik.handleChange}/>
                         <input id="password" name="password" type="password" placeholder="Password" value={formik.values.password} onChange={formik.handleChange}/>
+                        <input id="email" name="email" placeholder="Email" value={formik.values.email} onChange={formik.handleChange}/>
                         <button type="submit" className="login-buttons">Create Account</button>
                         <hr></hr>
                         <span className="login-text">Already have an account?</span>

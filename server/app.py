@@ -1,43 +1,37 @@
 #!/usr/bin/env python3
 
 # Standard library imports
-import ipdb
+from urllib import response
+
 # Remote library imports
-from flask import Flask, jsonify, make_response, request, session
-from flask_cors import CORS
-from flask_migrate import Migrate
+from flask import jsonify, make_response, request, session, redirect, url_for
 from flask_restful import Api, Resource
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import MetaData
 from authlib.integrations.flask_client import OAuth
 
 # Local imports
 from config import app, db, api
+from api_key import *
 
 # Add your model imports
 from models import db, User
 
-from api_key import *
 
 api = Api(app)
 oauth = OAuth(app)
 
-# google = oauth.register()
-
+google = oauth.register(
+    name='google',
+    client_id=CLIENT_ID,
+    client_secret=CLIENT_SECRET,
+    server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
+    client_kwargs={'scope': 'openid profile email'}
+)
 
 @app.route('/test_session')
 def test_session():
-    print("Inside Test Session:", session)
-    if 'user_id' not in session:
-        return "No current session initialized."
-    return f"Session persists with user_id: {session['user_id']}."
-
-@app.route("/clear")
-def clear_session():
-    print("Clear:", session)
-    session.clear()
-    print("Session cleared.")
-    return "Session cleared"
+    if 'user_id' in session:
+        return f"Session persists with user_id: {session['user_id']}"
+    return "No session found."
 
 @app.route('/')
 def index():
@@ -58,7 +52,8 @@ class CreateAccountResource(Resource):
         user = User(
             first_name = data['first_name'],
             last_name = data['last_name'],
-            username = data['username']
+            username = data['username'],
+            email = data['email']
         )
         user.password_hash = data['password']
         
@@ -109,6 +104,44 @@ class LogoutResource(Resource):
 
         return response
     
+# Login for Google
+@app.route('/login/google')
+def login_google():
+    try:
+        redirect_uri = url_for('authorize_google',_external=True)
+        return google.authorize_redirect(redirect_uri)
+    except Exception as e:
+        app.logger.error(f"Error during login:{str(e)}")
+        return "Error occured during login", 500
+
+
+# Authorization for Google
+@app.route('/authorize/google')
+def authorize_google():
+    try:
+        token = google.authorize_access_token()
+        userinfo_endpoint = google.server_metadata['userinfo_endpoint']
+        response = google.get(userinfo_endpoint)
+        user_info = response.json()
+        email = user_info['email']
+
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            return "Error: user not found."
+        
+        session['user_id'] = user.id
+        session['oauth_token'] = token
+        app.logger.info(f"Session set with user ID: {user.id}")
+
+        # Prepare the response with the necessary cookies
+        frontend_url = "http://localhost:4000/login-success"
+        response = make_response(redirect(frontend_url))
+        response.set_cookie("user_id", str(user.id), httponly=True, samesite="Lax")
+        
+        return response
+    except Exception as e:
+        app.logger.error(f"Error during Google authorization: {str(e)}")
+        return jsonify({"error": "An error occurred during Google authorization."}), 500
 
     
 api.add_resource(UserResource, '/users')

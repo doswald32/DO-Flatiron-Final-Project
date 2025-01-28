@@ -6,6 +6,7 @@ import { createBrowserRouter, RouterProvider, useOutletContext, Navigate } from 
 import Home from "./components/Home";
 import Login from "./components/Login";
 import CreateAccount from "./components/CreateAccount";
+import LoginSuccess from "./components/LoginSuccess";
 
 
 function OutletWrapper({ children }) {
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
                 path: "/createAccount",
                 element: <CreateAccount/>,
             },
+            {
+                path: "/login-success",
+                element: <LoginSuccess />,
+            }
         ]
     }
 ])

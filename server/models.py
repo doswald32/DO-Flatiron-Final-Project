@@ -8,10 +8,11 @@ class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String)
-    last_name = db.Column(db.String)
-    username = db.Column(db.String)
-    _password_hash = db.Column(db.String, nullable=False)
+    first_name = db.Column(db.String, nullable=True)
+    last_name = db.Column(db.String, nullable=True)
+    username = db.Column(db.String, unique=True, nullable=False)
+    _password_hash = db.Column(db.String, nullable=True)
+    email = db.Column(db.String, unique=True, nullable=True)
 
     def __repr__(self):
         return f'<User {self.id}: {self.first_name} {self.last_name}; {self.username}>'
