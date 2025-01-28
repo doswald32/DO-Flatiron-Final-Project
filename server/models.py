@@ -1,3 +1,4 @@
+from tkinter import SE
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -28,3 +29,12 @@ class User(db.Model, SerializerMixin):
     
     def authenticate(self, password):
         return bcrypt.check_password_hash(self._password_hash, password.encode('utf-8'))
+    
+class Course(db.Model, SerializerMixin):
+    __tablename__ = 'courses'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    address = db.Column(db.String, nullable=False)
+    rating = db.Column(db.Float, nullable=True)
+    favorite = db.Column(db.Boolean)

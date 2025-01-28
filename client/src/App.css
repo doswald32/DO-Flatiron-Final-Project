@@ -64,3 +64,15 @@
     padding-bottom: 10px;
 }
 
+.course-card-container {
+    display: flex;
+    border: solid;
+    margin: 5px;
+    width: 50%;
+}
+
+.course-card-info-container {
+    border: solid;
+    margin: 5px;
+}
+

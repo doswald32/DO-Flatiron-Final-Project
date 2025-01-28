@@ -7,6 +7,7 @@ import Home from "./components/Home";
 import Login from "./components/Login";
 import CreateAccount from "./components/CreateAccount";
 import LoginSuccess from "./components/LoginSuccess";
+import Courses from "./components/Courses";
 
 
 function OutletWrapper({ children }) {
@@ -47,7 +48,11 @@ const router = createBrowserRouter([
             {
                 path: "/login-success",
                 element: <LoginSuccess />,
-            }
+            },
+            {
+                path: "/courses",
+                element: <Courses />,
+            },
         ]
     }
 ])

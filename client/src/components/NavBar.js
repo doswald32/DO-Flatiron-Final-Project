@@ -1,8 +1,8 @@
-import { useOutletContext, useNavigate } from "react-router-dom";
+import { useOutletContext, useNavigate, NavLink } from "react-router-dom";
 
 function NavBar() {
 
-    const { setUser, user } = useOutletContext();
+    const { setUser } = useOutletContext();
     const navigate = useNavigate();
 
     function handleLogout() {
@@ -25,7 +25,13 @@ function NavBar() {
 
     return (
         <nav>
-            <button onClick={handleLogout}>Logout</button>
+          <NavLink
+          to="/courses"
+          className="nav-link"
+          >
+            Courses
+          </NavLink>
+          <button onClick={handleLogout}>Logout</button>
         </nav>
     )
 }

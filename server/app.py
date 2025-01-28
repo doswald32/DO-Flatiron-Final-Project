@@ -13,7 +13,7 @@ from config import app, db, api
 from api_key import *
 
 # Add your model imports
-from models import db, User
+from models import db, User, Course
 
 
 api = Api(app)
@@ -43,6 +43,13 @@ class UserResource(Resource):
         users_to_dict = [user.to_dict() for user in users]
 
         return make_response(users_to_dict, 200)
+    
+class CourseResource(Resource):
+    def get(self):
+        courses = Course.query.all()
+        courses_dict = [course.to_dict() for course in courses]
+        response = make_response(courses_dict, 200)
+        return response
 
 class CreateAccountResource(Resource):
     def post(self):
@@ -145,6 +152,7 @@ def authorize_google():
 
     
 api.add_resource(UserResource, '/users')
+api.add_resource(CourseResource, '/courses')
 api.add_resource(CreateAccountResource, '/create_account')
 api.add_resource(LoginResource, '/login')
 api.add_resource(CheckSession, '/check_session')
