@@ -6,13 +6,7 @@ function CourseDetail () {
     const { id } = useParams();
     const { courses } = useOutletContext();
 
-    console.log("ID:", id)
-
-    console.log("Courses:", courses)
-
     const course = courses.find((course) => course.id === Number(id))
-
-    console.log("Course:", course)
 
     return (
         <>

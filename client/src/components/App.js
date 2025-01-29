@@ -38,7 +38,6 @@ function App() {
     .then((data) => setCourses(data))
   }, [])
 
-  console.log(courses)
 
   return (
     <div className="App">

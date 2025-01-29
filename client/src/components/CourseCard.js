@@ -1,31 +1,33 @@
+import { useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 
 function CourseCard({ id, name, address, rating, favorite }) {
 
-    const { courses, setCourses } = useOutletContext();
+    const { setCourses } = useOutletContext();
+    const [showModal, setShowModal] = useState(false);
 
-    function handleCourseDelete() {
-        const shouldRemove = window.confirm("Are you sure you want to delete this course?")
-        if (shouldRemove) {
-            fetch(`http://127.0.0.1:5555/courses/${id}`, {
-                method: 'DELETE',
-            })
-            .then((r) => {
-                if (!r.ok) {
-                    throw new Error("Error deleting course.")
-                } else {
-                    r.json();
-                }
-            })
-            .then(() => setCourses((prevCourses) => prevCourses.filter((course) => course.id !== id)))
-            .catch((error) => {
-                console.error("Error deleting course:", error);
-            })
-        }
-
+    function handleDeleteConfirmation() {
+        setShowModal(true)
     }
 
-    console.log(courses)
+    function handleCourseDelete() {
+        fetch(`http://127.0.0.1:5555/courses/${id}`, {
+            method: "DELETE",
+        })
+        .then((r) => {
+            if (!r.ok) {
+                throw new Error("Error deleting course.");
+            }
+            return r.json();
+        })
+        .then(() => {
+            setCourses((prevCourses) => prevCourses.filter((course) => course.id !== id));
+            setShowModal(false);
+        })
+        .catch((error) => {
+            console.error("Error deleting course:", error);
+        });
+    }
 
     return (
         <div className="course-card-container">
@@ -35,8 +37,16 @@ function CourseCard({ id, name, address, rating, favorite }) {
                 <p>Rating: {rating}</p>
                 <p>Favorite: {favorite ? 'True' : null}</p>
                 <Link className="course-detail-button" to={`/course-detail/${id}`}>Course Detail</Link>
-                <button className="course-delete-button" onClick={handleCourseDelete}>X</button>
+                <button className="course-delete-button" onClick={handleDeleteConfirmation}>X</button>
             </div>
+
+            {showModal && (
+                <div className="modal">
+                    <p>Are you sure you want to delete this course?</p>
+                    <button onClick={handleCourseDelete}>Yes</button>
+                    <button onClick={() => setShowModal(false)}>Cancel</button>
+                </div>
+            )}
         </div>
     );
 };
