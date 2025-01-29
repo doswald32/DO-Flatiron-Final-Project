@@ -1,5 +1,6 @@
 import { useOutletContext } from "react-router-dom";
 import CourseCard from "./CourseCard";
+import NavBar from "./NavBar";
 
 function Courses() {
 
@@ -7,7 +8,9 @@ function Courses() {
 
     return (
         <>
-            <h1>Courses</h1>
+            <header>
+                <NavBar />
+            </header>
             <div className="courses-list">
             {courses.map((course) => {
                 return (

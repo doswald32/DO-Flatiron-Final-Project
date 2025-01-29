@@ -42,7 +42,7 @@ function App() {
 
   return (
     <div className="App">
-      <Outlet context={{ user, setUser, loading, courses }} />
+      <Outlet context={{ user, setUser, loading, courses, setCourses }} />
     </div>
   );
 }

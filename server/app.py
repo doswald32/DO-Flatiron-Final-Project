@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
 # Standard library imports
+from os import abort
 from urllib import response
 
 # Remote library imports
 from flask import jsonify, make_response, request, session, redirect, url_for
-from flask_restful import Api, Resource
+from flask_restful import Api, Resource, abort
 from authlib.integrations.flask_client import OAuth
 
 # Local imports
@@ -26,6 +27,9 @@ google = oauth.register(
     server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
     client_kwargs={'scope': 'openid profile email'}
 )
+
+def handle_not_found(resource, resource_id):
+    abort(404, message=f"{resource} with ID {resource_id} not found.")
 
 @app.route('/test_session')
 def test_session():
@@ -50,6 +54,18 @@ class CourseResource(Resource):
         courses_dict = [course.to_dict() for course in courses]
         response = make_response(courses_dict, 200)
         return response
+    
+    def delete(self, id):
+        course = Course.query.filter(Course.id == id).first()
+        if course:
+            db.session.delete(course)
+            db.session.commit()
+        else: 
+            handle_not_found("Course", id)
+            return "Course not found."
+        
+        return {"message": f"Course {id} successfully deleted."}, 200
+
 
 class CreateAccountResource(Resource):
     def post(self):
@@ -152,7 +168,7 @@ def authorize_google():
 
     
 api.add_resource(UserResource, '/users')
-api.add_resource(CourseResource, '/courses')
+api.add_resource(CourseResource, '/courses', '/courses/<int:id>')
 api.add_resource(CreateAccountResource, '/create_account')
 api.add_resource(LoginResource, '/login')
 api.add_resource(CheckSession, '/check_session')

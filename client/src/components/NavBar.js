@@ -26,12 +26,24 @@ function NavBar() {
     return (
         <nav>
           <NavLink
+          to="/"
+          className="nav-link"
+          >
+            Home
+          </NavLink>
+          <NavLink
           to="/courses"
           className="nav-link"
           >
             Courses
           </NavLink>
-          <button onClick={handleLogout}>Logout</button>
+          <NavLink
+          to="/scorecards"
+          className="nav-link"
+          >
+            Scorecards
+          </NavLink>
+          <button className="logout-button" onClick={handleLogout}>Logout</button>
         </nav>
     )
 }
