@@ -8,8 +8,10 @@ import Login from "./components/Login";
 import CreateAccount from "./components/CreateAccount";
 import LoginSuccess from "./components/LoginSuccess";
 import Courses from "./components/Courses";
-import Scorecards from "./components/Scores";
+import ScoreCard from "./components/ScoreCard";
 import CourseDetail from "./components/CourseDetail";
+import Scores from "./components/Scores";
+
 
 
 function OutletWrapper({ children }) {
@@ -56,12 +58,16 @@ const router = createBrowserRouter([
                 element: <Courses />,
             },
             {
-                path: "/scorecards",
-                element: <Scorecards />
+                path: "/scorecard",
+                element: <ScoreCard />
             },
             {
                 path: "/course-detail/:id",
                 element: <CourseDetail />
+            },
+            {
+                path: "/scores",
+                element: <Scores />
             }
         ]
     }

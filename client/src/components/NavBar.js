@@ -38,7 +38,7 @@ function NavBar() {
             Courses
           </NavLink>
           <NavLink
-          to="/scorecards"
+          to="/scores"
           className="nav-link"
           >
             Scorecards
