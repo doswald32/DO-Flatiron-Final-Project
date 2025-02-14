@@ -14,7 +14,7 @@ from config import app, db, api
 from api_key import *
 
 # Add your model imports
-from models import db, User, Course
+from models import db, User, Course, ScoreCard
 
 
 api = Api(app)
@@ -34,12 +34,6 @@ def handle_not_found(resource, resource_id):
 def handle_error(message):
     return jsonify({"error": message}), 400
 
-@app.route('/test_session')
-def test_session():
-    if 'user_id' in session:
-        return f"Session persists with user_id: {session['user_id']}"
-    return "No session found."
-
 @app.route('/')
 def index():
     return '<h1>Project Server</h1>'
@@ -50,58 +44,6 @@ class UserResource(Resource):
         users_to_dict = [user.to_dict() for user in users]
 
         return make_response(users_to_dict, 200)
-    
-class CourseResource(Resource):
-    def get(self):
-        courses = Course.query.all()
-        courses_dict = [course.to_dict() for course in courses]
-        response = make_response(courses_dict, 200)
-        return response
-    
-    def post(self):
-        data = request.get_json()
-        course = Course(
-            name=data['newCourse']['name'],
-            address=data['newCourse']['address'],
-            rating=data['newCourse']['rating'],
-            favorite=data['newCourse']['favorite']
-        )
-
-        db.session.add(course)
-        db.session.commit()
-
-        return make_response(jsonify(course.to_dict()), 200)
-    
-    def patch(self, id):
-        course = Course.query.filter(Course.id == id).first()
-        if not course:
-            return {"error": f"Course with ID {id} not found."}, 404
-        
-        try:
-            data = request.get_json()
-            course.name = data.get('name', course.name)
-            course.address = data.get('address', course.address)
-            course.rating = float(data.get('rating', course.rating))
-            course.favorite = bool(data.get('favorite', course.favorite))
-
-            db.session.commit()
-
-            return make_response(course.to_dict(), 200)
-
-        except Exception as e:
-            db.session.rollback()
-            return handle_error(f"Error updating course: {str(e)}")
-
-    def delete(self, id):
-        course = Course.query.filter(Course.id == id).first()
-        if course:
-            db.session.delete(course)
-            db.session.commit()
-        else: 
-            handle_not_found("Course", id)
-            return "Course not found."
-        
-        return {"message": f"Course {id} successfully deleted."}, 200
 
 
 class CreateAccountResource(Resource):
@@ -123,6 +65,7 @@ class CreateAccountResource(Resource):
         response = make_response(jsonify(user.to_dict()), 201)
 
         return response
+
 
 class LoginResource(Resource):
     def post(self):
@@ -203,13 +146,79 @@ def authorize_google():
         app.logger.error(f"Error during Google authorization: {str(e)}")
         return jsonify({"error": "An error occurred during Google authorization."}), 500
 
+
+class CourseResource(Resource):
+    def get(self):
+        courses = Course.query.all()
+        courses_dict = [course.to_dict() for course in courses]
+        response = make_response(courses_dict, 200)
+        return response
     
+    def post(self):
+        data = request.get_json()
+        course = Course(
+            name=data['newCourse']['name'],
+            address=data['newCourse']['address'],
+            rating=data['newCourse']['rating'],
+            favorite=data['newCourse']['favorite']
+        )
+
+        db.session.add(course)
+        db.session.commit()
+
+        return make_response(jsonify(course.to_dict()), 200)
+    
+    def patch(self, id):
+        course = Course.query.filter(Course.id == id).first()
+        if not course:
+            return {"error": f"Course with ID {id} not found."}, 404
+        
+        try:
+            data = request.get_json()
+            course.name = data.get('name', course.name)
+            course.address = data.get('address', course.address)
+            course.rating = float(data.get('rating', course.rating))
+            course.favorite = bool(data.get('favorite', course.favorite))
+
+            db.session.commit()
+
+            return make_response(course.to_dict(), 200)
+
+        except Exception as e:
+            db.session.rollback()
+            return handle_error(f"Error updating course: {str(e)}")
+
+    def delete(self, id):
+        course = Course.query.filter(Course.id == id).first()
+        if course:
+            db.session.delete(course)
+            db.session.commit()
+        else: 
+            handle_not_found("Course", id)
+            return "Course not found."
+        
+        return {"message": f"Course {id} successfully deleted."}, 200
+    
+
+class ScoreCardResource(Resource):
+    def get(self, id=None):
+        if id is None:
+            scorecards = [scorecard.to_dict() for scorecard in ScoreCard.query.all()]
+            return make_response(scorecards, 200)
+        else:
+            scorecard = ScoreCard.query.filter(ScoreCard.id == id).first()
+            if not scorecard:
+                handle_not_found("Scorecard", id)
+            return make_response(scorecard.to_dict(), 200)
+
+
 api.add_resource(UserResource, '/users')
 api.add_resource(CourseResource, '/courses', '/courses/<int:id>')
 api.add_resource(CreateAccountResource, '/create_account')
 api.add_resource(LoginResource, '/login')
 api.add_resource(CheckSession, '/check_session')
 api.add_resource(LogoutResource, '/logout')
+api.add_resource(ScoreCardResource, '/scorecards', '/scorecard/<int:id>')
 
 
 if __name__ == '__main__':
