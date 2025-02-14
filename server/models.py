@@ -7,6 +7,8 @@ from config import db, bcrypt
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
 
+    serialize_rules = ('-rounds.user',)
+
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String, nullable=True)
     last_name = db.Column(db.String, nullable=True)
@@ -39,6 +41,8 @@ class User(db.Model, SerializerMixin):
 class Course(db.Model, SerializerMixin):
     __tablename__ = 'courses'
 
+    serialize_rules = ('-rounds.course',)
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     address = db.Column(db.String, nullable=False)
@@ -58,6 +62,8 @@ class Course(db.Model, SerializerMixin):
 class Round(db.Model, SerializerMixin):
     __tablename__ = 'rounds'
 
+    serialize_rules = ('-user.rounds', '-course.rounds', '-scorecard.round',)
+
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date)
     par_3 = db.Column(db.Boolean)
@@ -76,6 +82,8 @@ class Round(db.Model, SerializerMixin):
 
 class ScoreCard(db.Model, SerializerMixin):
     __tablename__ = 'scorecards'
+
+    serialize_rules = ('-round.scorecard',)
 
     id = db.Column(db.Integer, primary_key=True)
     crs_yrds = db.Column(db.Integer)

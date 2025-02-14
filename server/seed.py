@@ -108,7 +108,20 @@ if __name__ == '__main__':
             eagle=0,
             hoi=0,
         )
-        scores = [s1, s2]
+        s3 = ScoreCard(
+            crs_yrds=6150,
+            crs_par=72,
+            usr_strokes=72,
+            usr_scr_to_par=0,
+            putts=30,
+            bogey_worse=0,
+            bogey=0,
+            par=18,
+            birdie=0,
+            eagle=0,
+            hoi=0,
+        )
+        scores = [s1, s2, s3]
         db.session.add_all(scores)
         db.session.commit()
 
@@ -126,10 +139,18 @@ if __name__ == '__main__':
             par_3=False,
             full_18=True,
             user=u2,
+            course=c1,
+            scorecard=s2,
+        )
+        r3 = Round(
+            date=date(2024, 6, 6),
+            par_3=False,
+            full_18=True,
+            user=u1,
             course=c3,
             scorecard=s2,
         )
-        rounds = [r1, r2]
+        rounds = [r1, r2, r3]
         db.session.add_all(rounds)
         db.session.commit()
 
