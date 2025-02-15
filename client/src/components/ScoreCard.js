@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
 import NavBar from "./NavBar";
 
 function ScoreCard() {
@@ -13,6 +13,7 @@ function ScoreCard() {
     const [stats, setStats] = useState({
         holeInOnes: 0,
         eagles: 0,
+        birdies: 0,
         pars: 0,
         bogeys: 0,
         bogey_worse: 0,
@@ -85,10 +86,19 @@ function ScoreCard() {
         setStats({ holeInOnes, eagles, birdies, pars, bogeys, bogey_worse });
     };
 
+    const navigate = useNavigate()
+
     function handleSubmit() {
-        if (!userId || !course) {
-            console.error("Error: User ID or Course ID missing.")
+        if (!userId) {
+            console.error("Error: User ID missing.");
+            return;
         }
+
+        if (!course || !date) {
+            alert("Please select a course and date before submitting.");
+            return;
+        }
+
         const scoreCardData = {
             stats,
             total_par,
@@ -106,7 +116,6 @@ function ScoreCard() {
         .then(response => response.json())
         .then(scoreCardResponse => {
             console.log("Scorecard submitted:", scoreCardResponse)
-            console.log("Scorecard ID:", scoreCardResponse.id);
 
             if (scoreCardResponse.id) {
                 const roundData = {
@@ -130,7 +139,11 @@ function ScoreCard() {
             }
         })
         .then(r => r.json())
-        .then(roundResponse => console.log("Round submitted:", roundResponse))
+        .then(roundResponse => {
+            console.log("Round submitted:", roundResponse);
+            alert("Round successfully submitted!")
+            navigate("/scores");
+        })
         .catch(error => console.error("Error submitting round:", error));
     };
 

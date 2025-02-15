@@ -44,7 +44,8 @@ if __name__ == '__main__':
         c1 = Course(
             name="City Park Golf Course",
             address="3181 E 23rd Ave, Denver, CO 80205",
-            rating=8.7,
+            website="https://www.cityofdenvergolf.com/city-park/",
+            rating=8,
             favorite=True,
         )
         c2 = Course(

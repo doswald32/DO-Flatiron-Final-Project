@@ -35,12 +35,6 @@ class User(db.Model, SerializerMixin):
         if not username.isalnum():
             raise ValueError("Username can only contain letters and numbers.")
         return username
-    
-    @validates('_password_hash')
-    def validate_password(self, key, password):
-        if not (8 <= len(password) <= 40):
-            raise ValueError("Password must be between 8 and 40 characters.")
-        return password
 
     @hybrid_property
     def password_hash(self):
@@ -66,10 +60,27 @@ class Course(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     address = db.Column(db.String, nullable=False)
+    website = db.Column(db.String(255), nullable=True)
     rating = db.Column(db.Float, nullable=True)
     favorite = db.Column(db.Boolean)
 
     rounds = db.relationship('Round', back_populates='course', cascade='all, delete-orphan')
+
+    @validates('website')
+    def validate_website(self, key, website):
+        if website is None or website == "":
+            return None
+        return website
+
+    @validates('rating')
+    def validate_rating(self, key, rating):
+        if rating is None:
+            return None
+        if not isinstance(rating, (int, float)):
+            raise ValueError("Rating must be a number.")
+        if rating < 0 or rating > 10:
+            raise ValueError("Rating must be between 0 and 10.")
+        return round(rating, 1)
 
     def __repr__(self):
         return f'<Course {self.id}, {self.name}, Address: {self.address}, Rating: {self.rating}, Favorite: {self.favorite}>'
