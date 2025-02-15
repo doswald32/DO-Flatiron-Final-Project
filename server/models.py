@@ -1,6 +1,9 @@
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import validates
+
+import re
 
 from config import db, bcrypt
 
@@ -17,6 +20,27 @@ class User(db.Model, SerializerMixin):
     email = db.Column(db.String, unique=True, nullable=True)
 
     rounds = db.relationship('Round', back_populates='user', cascade='all, delete-orphan')
+
+    @validates('email')
+    def validate_email(self, key, address):
+        email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+        if not re.match(email_regex, address):
+            raise ValueError("Invalid email format.")
+        return address
+    
+    @validates('username')
+    def validate_username(self, key, username):
+        if not (1 <= len(username) <= 40):
+            raise ValueError("Username must be between 1 and 40 characters.")
+        if not username.isalnum():
+            raise ValueError("Username can only contain letters and numbers.")
+        return username
+    
+    @validates('_password_hash')
+    def validate_password(self, key, password):
+        if not (8 <= len(password) <= 40):
+            raise ValueError("Password must be between 8 and 40 characters.")
+        return password
 
     @hybrid_property
     def password_hash(self):
