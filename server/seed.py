@@ -83,7 +83,6 @@ if __name__ == '__main__':
 
         print("Adding Scorecards...")
         s1 = ScoreCard(
-            crs_yrds=6200,
             crs_par=72,
             usr_strokes=80,
             usr_scr_to_par=8,
@@ -96,7 +95,6 @@ if __name__ == '__main__':
             hoi=0,
         )
         s2 = ScoreCard(
-            crs_yrds=6300,
             crs_par=72,
             usr_strokes=73,
             usr_scr_to_par=1,
@@ -109,7 +107,6 @@ if __name__ == '__main__':
             hoi=0,
         )
         s3 = ScoreCard(
-            crs_yrds=6150,
             crs_par=72,
             usr_strokes=72,
             usr_scr_to_par=0,
@@ -148,7 +145,7 @@ if __name__ == '__main__':
             full_18=True,
             user=u1,
             course=c3,
-            scorecard=s2,
+            scorecard=s3,
         )
         rounds = [r1, r2, r3]
         db.session.add_all(rounds)

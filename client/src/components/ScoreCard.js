@@ -3,19 +3,19 @@ import { useOutletContext } from "react-router-dom";
 import NavBar from "./NavBar";
 
 function ScoreCard() {
-    const [setDate] = useState(null);
+    const [date, setDate] = useState(null);
     const [isPar3, setIsPar3] = useState(false);
+    const [userId, setUserId] = useState(null);
     const { courses } = useOutletContext();
     const [holeCount, setHoleCount] = useState(9);
     const [scorecard, setScorecard] = useState([]);
-    const [setCourse] = useState(null);
+    const [course, setCourse] = useState(null);
     const [stats, setStats] = useState({
         holeInOnes: 0,
         eagles: 0,
-        birdies: 0,
         pars: 0,
         bogeys: 0,
-        bogeyPlus: 0,
+        bogey_worse: 0,
     });
 
     useEffect(() => {
@@ -25,10 +25,26 @@ function ScoreCard() {
                 par: "",
                 strokes: "",
                 putts: "",
-                yardage: "",
             }))
         );
     }, [holeCount, isPar3]);
+
+    useEffect(() => {
+        fetch("/check_session")
+        .then(r => r.json())
+        .then(data => {
+            if (data.id) {
+                setUserId(data.id);
+            } else {
+                console.error("User not authenticated.");
+            }
+        })
+        .catch(err => console.error("Error fetching session:", err))
+    })
+
+    const total_par = scorecard.reduce((sum, hole) => sum + hole.par, 0)
+    const total_strokes = scorecard.reduce((sum, hole) => sum + hole.strokes, 0)
+    const total_putts = scorecard.reduce((sum, hole) => sum + hole.putts, 0)
 
     function handleCourseChange(e) {
         setCourse(e.target.value)
@@ -51,7 +67,7 @@ function ScoreCard() {
         let birdies = 0;
         let pars = 0;
         let bogeys = 0; 
-        let bogeyPlus = 0;
+        let bogey_worse = 0;
 
         updatedScorecard.forEach(({ par, strokes }) => {
             if (par && strokes) {
@@ -61,22 +77,62 @@ function ScoreCard() {
                 else if (scoreDiff === -1) birdies++;
                 else if (scoreDiff === 0) pars++;
                 else if (scoreDiff === 1) bogeys++;
-                else if (scoreDiff > 1) bogeyPlus++;
+                else if (scoreDiff > 1) bogey_worse++;
                 if (strokes === 1) holeInOnes++;
             }
         });
 
-        setStats({ holeInOnes, eagles, birdies, pars, bogeys, bogeyPlus });
+        setStats({ holeInOnes, eagles, birdies, pars, bogeys, bogey_worse });
     };
 
-    // function handleSubmit(e) {
-    //     const roundData = {
+    function handleSubmit() {
+        if (!userId || !course) {
+            console.error("Error: User ID or Course ID missing.")
+        }
+        const scoreCardData = {
+            stats,
+            total_par,
+            total_strokes,
+            total_putts,
+        };
 
-    //     }
-    // };
+        fetch("/scorecards", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(scoreCardData),
+        })
+        .then(response => response.json())
+        .then(scoreCardResponse => {
+            console.log("Scorecard submitted:", scoreCardResponse)
+            console.log("Scorecard ID:", scoreCardResponse.id);
 
-    console.log(scorecard)
+            if (scoreCardResponse.id) {
+                const roundData = {
+                    user_id: userId,
+                    course_id: course,
+                    scorecard_id: scoreCardResponse.id,
+                    date: date,
+                    is_par3: isPar3,
+                    full_18: holeCount === 18,
+                };
 
+                return fetch("/rounds", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(roundData),
+                });
+            } else {
+                throw new Error ("Failed to retrieve scorecard ID");
+            }
+        })
+        .then(r => r.json())
+        .then(roundResponse => console.log("Round submitted:", roundResponse))
+        .catch(error => console.error("Error submitting round:", error));
+    };
 
     return (
         <>
@@ -102,6 +158,7 @@ function ScoreCard() {
                     {holeCount} Holes
                     </button>
                     <select id="course-dropdown" onChange={handleCourseChange}>
+                        <option value="">Select a Course</option>
                         {courses.map((course) => {
                             return <option key={course.id} value={course.id}>{course.name}</option>
                         })}
@@ -116,7 +173,6 @@ function ScoreCard() {
                                 <th>Par</th>
                                 <th>Strokes</th>
                                 <th>Putts</th>
-                                <th>Yardage</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -144,13 +200,6 @@ function ScoreCard() {
                                             onChange={(e) => handleScoreChange(index, "putts", parseInt(e.target.value))}
                                         />
                                     </td>
-                                    <td>
-                                        <input
-                                            type="number"
-                                            value={hole.yardage}
-                                            onChange={(e) => handleScoreChange(index, "yardage", parseInt(e.target.value))}
-                                        />
-                                    </td>
                                 </tr>
                             ))}
                         </tbody>
@@ -164,10 +213,10 @@ function ScoreCard() {
                     <p>Birdies: {stats.birdies}</p>
                     <p>Pars: {stats.pars}</p>
                     <p>Bogeys: {stats.bogeys}</p>
-                    <p>Bogey+: {stats.bogeyPlus}</p>
+                    <p>Bogey+: {stats.bogey_worse}</p>
                 </div>
 
-                <button>
+                <button onClick={handleSubmit}>
                     Submit Scorecard
                 </button>
             </div>

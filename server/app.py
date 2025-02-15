@@ -8,13 +8,14 @@ from urllib import response
 from flask import jsonify, make_response, request, session, redirect, url_for
 from flask_restful import Api, Resource, abort
 from authlib.integrations.flask_client import OAuth
+from datetime import datetime
 
 # Local imports
 from config import app, db, api
 from api_key import *
 
 # Add your model imports
-from models import db, User, Course, ScoreCard
+from models import db, User, Course, ScoreCard, Round
 
 
 api = Api(app)
@@ -210,7 +211,54 @@ class ScoreCardResource(Resource):
             if not scorecard:
                 handle_not_found("Scorecard", id)
             return make_response(scorecard.to_dict(), 200)
+        
+    def post(self):
+        data = request.get_json()
+        score = ScoreCard(
+            crs_par = data['total_par'],
+            usr_strokes = data['total_strokes'],
+            usr_scr_to_par = int(int(data['total_strokes']) - int(data['total_par'])),
+            putts = data['total_putts'],
+            bogey_worse = data['stats']['bogey_worse'],
+            bogey = data['stats']['bogeys'],
+            par = data['stats']['pars'],
+            birdie = data['stats']['birdies'],
+            eagle = data['stats']['eagles'],
+            hoi = data['stats']['holeInOnes']
+        )
+        db.session.add(score)
+        db.session.commit()
 
+        return make_response(jsonify(score.to_dict()), 200)
+    
+
+class RoundResource(Resource):
+    def get(self, id=None):
+        if id is None:
+            rounds = [round.to_dict() for round in Round.query.all()]
+            return make_response(rounds, 200)
+        else:
+            round = Round.query.filter(Round.id == id).first()
+            if not round:
+                return handle_not_found("Round", id)
+            return make_response(round.to_dict(), 200)
+        
+    def post(self):
+        data = request.get_json()
+        date = datetime.strptime(data['date'], "%Y-%m-%d").date()
+        round = Round(
+            date = date,
+            par_3 = data['is_par3'],
+            full_18 = data['full_18'],
+            user_id = data['user_id'],
+            course_id = data['course_id'],
+            scorecard_id = data['scorecard_id']
+        )
+        db.session.add(round)
+        db.session.commit()
+
+        return make_response(round.to_dict(), 200)
+    
 
 api.add_resource(UserResource, '/users')
 api.add_resource(CourseResource, '/courses', '/courses/<int:id>')
@@ -219,6 +267,7 @@ api.add_resource(LoginResource, '/login')
 api.add_resource(CheckSession, '/check_session')
 api.add_resource(LogoutResource, '/logout')
 api.add_resource(ScoreCardResource, '/scorecards', '/scorecard/<int:id>')
+api.add_resource(RoundResource, '/rounds', '/rounds/<int:id>')
 
 
 if __name__ == '__main__':

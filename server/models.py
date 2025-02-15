@@ -18,10 +18,6 @@ class User(db.Model, SerializerMixin):
 
     rounds = db.relationship('Round', back_populates='user', cascade='all, delete-orphan')
 
-    # courses = association_proxy('rounds', 'course', creator=lambda course_obj: Round(course=course_obj))
-
-    # scorecards = association_proxy('rounds', 'scorecard', creator=lambda scorecard_obj: Round(scorecard=scorecard_obj))
-
     @hybrid_property
     def password_hash(self):
         return self._password_hash
@@ -50,10 +46,6 @@ class Course(db.Model, SerializerMixin):
     favorite = db.Column(db.Boolean)
 
     rounds = db.relationship('Round', back_populates='course', cascade='all, delete-orphan')
-
-    # users = association_proxy('rounds', 'user', creator=lambda user_obj: Round(user=user_obj))
-
-    # scorecards = association_proxy('rounds', 'scorecard', creator=lambda scorecard_obj: Round(scorecard=scorecard_obj))
 
     def __repr__(self):
         return f'<Course {self.id}, {self.name}, Address: {self.address}, Rating: {self.rating}, Favorite: {self.favorite}>'
@@ -86,7 +78,6 @@ class ScoreCard(db.Model, SerializerMixin):
     serialize_rules = ('-round.scorecard',)
 
     id = db.Column(db.Integer, primary_key=True)
-    crs_yrds = db.Column(db.Integer)
     crs_par = db.Column(db.Integer)
     usr_strokes = db.Column(db.Integer)
     usr_scr_to_par = db.Column(db.Integer)
@@ -100,13 +91,8 @@ class ScoreCard(db.Model, SerializerMixin):
 
     round = db.relationship('Round', back_populates='scorecard', uselist=False)
 
-    # users = association_proxy('rounds', 'user', creator=lambda user_obj: Round(user=user_obj))
-
-    # courses = association_proxy('rounds', 'course', creator=lambda course_obj: Round(course=course_obj))
-
     def __repr__(self):
         return f'''<ScoreCard {self.id}, 
-        Course Yardage: {self.crs_yrds},
         Par: {self.crs_par},
         Strokes: {self.usr_strokes},
         Score to Par: {self.usr_scr_to_par},
