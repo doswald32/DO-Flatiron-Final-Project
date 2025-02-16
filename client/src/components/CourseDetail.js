@@ -9,9 +9,6 @@ function CourseDetail () {
     const round = user.rounds.filter(round => round.course.id === Number(id))[0]
     const course = round.course
 
-    console.log("Rounds: ", round)
-    console.log("Course: ", round.course)
-
     return (
         <>
             <header>
