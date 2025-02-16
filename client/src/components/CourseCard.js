@@ -60,14 +60,7 @@ function CourseCard({ id, name, address, rating, favorite }) {
     function handleFavoriteChange(e) {
         setEditedCourse((prev) => ({...prev, favorite: e.target.checked}))
     }
-
-    // function handleChange(e) {
-    //     const { name, value, type, checked } = e.target;
-    //     setEditedCourse((prev) => ({
-    //         ...prev,
-    //         [name]: type === "checkbox" ? checked : value,
-    //     }));
-    // }
+    
 
     return (
         <div className="course-card-container">
