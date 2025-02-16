@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../Assets/jaunt_logo.png";
+import logo from "../Assets/MyCaddyLogo.png";
 import { Link, useOutletContext, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";

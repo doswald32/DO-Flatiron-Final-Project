@@ -1,4 +1,5 @@
 import { useOutletContext, useNavigate, NavLink } from "react-router-dom";
+import logo from "../Assets/MyCaddyLogo.png";
 
 function NavBar() {
 
@@ -24,6 +25,8 @@ function NavBar() {
       }
 
     return (
+      <>
+        <img id="navbar-logo" src={logo} alt="my caddy logo"/>
         <nav>
           <NavLink
           to="/"
@@ -45,6 +48,7 @@ function NavBar() {
           </NavLink>
           <button className="logout-button" onClick={handleLogout}>Logout</button>
         </nav>
+      </>
     )
 }
 

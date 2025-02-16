@@ -1,4 +1,4 @@
-import logo from "../Assets/jaunt_logo.png";
+import logo from "../Assets/MyCaddyLogo.png";
 import { Link, useOutletContext, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -52,7 +52,7 @@ function Login() {
 
     return (
         <main className="login-container">
-            <img id="logo" src={logo} alt="jaunt logo"/>
+            <img id="logo" src={logo} alt="my caddy logo"/>
             <div className="login-window-border">
                 <div className="login-window">
                     <h1>Sign in</h1>
