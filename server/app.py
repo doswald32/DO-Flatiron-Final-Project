@@ -238,6 +238,19 @@ class ScoreCardResource(Resource):
 
         return make_response(jsonify(score.to_dict()), 200)
     
+    def delete(self, id):
+        score = ScoreCard.query.filter(ScoreCard.id == id).first()
+        if not score:
+            return {"error": f"Scorecard with ID {id} not found."}, 404
+        try:
+            Round.query.filter(Round.scorecard_id == id).delete()
+            db.session.delete(score)
+            db.session.commit()
+            return {"message": f"Scorecard {id} and its associated round were successfully deleted."}
+        except Exception as e:
+            db.session.rollback()
+            return {"error": f"Error deleting scorecard: {str(e)}"}, 500
+    
 
 class RoundResource(Resource):
     def get(self, id=None):
@@ -273,7 +286,7 @@ api.add_resource(CreateAccountResource, '/create_account')
 api.add_resource(LoginResource, '/login')
 api.add_resource(CheckSession, '/check_session')
 api.add_resource(LogoutResource, '/logout')
-api.add_resource(ScoreCardResource, '/scorecards', '/scorecard/<int:id>')
+api.add_resource(ScoreCardResource, '/scorecards', '/scorecards/<int:id>')
 api.add_resource(RoundResource, '/rounds', '/rounds/<int:id>')
 
 

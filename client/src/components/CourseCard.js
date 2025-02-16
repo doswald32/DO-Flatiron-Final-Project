@@ -73,7 +73,7 @@ function CourseCard({ id, name, address, rating, favorite }) {
                 <p>Favorite: {favorite ? 'True' : null}</p>
                 <Link className="course-detail-button" to={`/course-detail/${id}`}>Course Detail</Link>
                 <button className="course-edit-button" onClick={() => setShowEditModal(true)}>Edit</button>
-                <button className="course-delete-button" onClick={() => setShowDeleteModal(true)}>X</button>
+                <button className="course-delete-button" onClick={() => setShowDeleteModal(true)}>Delete</button>
             </div>
 
             <Modal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
