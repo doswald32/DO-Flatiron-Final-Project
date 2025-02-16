@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import logo from "../Assets/jaunt_logo.png";
 import { Link, useOutletContext, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
@@ -8,7 +7,6 @@ import * as Yup from "yup";
 function Login() {
     const { setUser } = useOutletContext();
     const navigate = useNavigate();
-    const [error, setError] = useState(null); 
   
     const formSchema = Yup.object({
       username: Yup.string().required("Username is required."),
@@ -16,9 +14,8 @@ function Login() {
     });
 
     function handleGoogleLogin() {
-      window.location.href = 'http://127.0.0.1:5555/login/google';
+      window.location.href = "http://127.0.0.1:5555/login/google";
     }
-
   
     const formik = useFormik({
       initialValues: {
@@ -45,12 +42,10 @@ function Login() {
           })
           .then((user) => {
             setUser(user); 
-            setError(null); 
             navigate("/"); 
           })
           .catch((err) => {
             console.error("Login failed:", err);
-            setError("Invalid username or password. Please try again."); 
           });
       },
     });

@@ -91,6 +91,7 @@ class LoginResource(Resource):
 class CheckSession(Resource):
     def get(self):
         user_id = session.get('user_id')
+        print("Session User ID:", user_id)
         if user_id:
             user = User.query.filter(User.id == user_id).first()
             if user:
@@ -115,17 +116,19 @@ class LogoutResource(Resource):
 @app.route('/login/google')
 def login_google():
     try:
-        redirect_uri = url_for('authorize_google',_external=True)
+        redirect_uri = url_for('authorize_google', _external=True)
+        print("In login...")
         return google.authorize_redirect(redirect_uri)
     except Exception as e:
-        app.logger.error(f"Error during login:{str(e)}")
-        return "Error occured during login", 500
+        app.logger.error(f"Error during login: {str(e)}")
+        return jsonify({"error": "Error occurred during login"}), 500
 
 
 # Authorization for Google
 @app.route('/authorize/google')
 def authorize_google():
     try:
+        print("In authorize...")
         token = google.authorize_access_token()
         userinfo_endpoint = google.server_metadata['userinfo_endpoint']
         response = google.get(userinfo_endpoint)
@@ -133,19 +136,19 @@ def authorize_google():
         email = user_info['email']
 
         user = User.query.filter_by(email=email).first()
+        ipdb.set_trace()
         if not user:
             return "Error: user not found."
         
         session['user_id'] = user.id
         session['oauth_token'] = token
-        app.logger.info(f"Session set with user ID: {user.id}")
+        print(f"✅ Google Auth: Session set with user ID: {session.get('user_id')}")
+        print(f"✅ Full session data: {session}")
 
-        # Prepare the response with the necessary cookies
-        frontend_url = "http://localhost:4000/login-success"
-        response = make_response(redirect(frontend_url))
-        response.set_cookie("user_id", str(user.id), httponly=True, samesite="Lax")
-        
-        return response
+        return jsonify({
+            "message": "Authentication successful",
+            "user": user.to_dict()
+        }), 200
     except Exception as e:
         app.logger.error(f"Error during Google authorization: {str(e)}")
         return jsonify({"error": "An error occurred during Google authorization."}), 500

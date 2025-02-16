@@ -6,7 +6,6 @@ import { createBrowserRouter, RouterProvider, useOutletContext, Navigate } from 
 import Home from "./components/Home";
 import Login from "./components/Login";
 import CreateAccount from "./components/CreateAccount";
-import LoginSuccess from "./components/LoginSuccess";
 import Courses from "./components/Courses";
 import ScoreCard from "./components/ScoreCard";
 import CourseDetail from "./components/CourseDetail";
@@ -48,10 +47,6 @@ const router = createBrowserRouter([
             {
                 path: "/createAccount",
                 element: <CreateAccount/>,
-            },
-            {
-                path: "/login-success",
-                element: <LoginSuccess />,
             },
             {
                 path: "/courses",

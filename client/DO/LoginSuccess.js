@@ -7,6 +7,7 @@ function LoginSuccess({ setUser }) {
     useEffect(() => {
         const queryParams = new URLSearchParams(window.location.search);
         const userId = queryParams.get("user_id");
+        console.log("User ID:", userId)
 
         if (userId) {
             fetch(`/check_session`, {

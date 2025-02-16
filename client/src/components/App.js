@@ -4,11 +4,11 @@ import { Outlet } from "react-router-dom";
 
 function App() {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [courses, setCourses] = useState(null);
 
   useEffect(() => {
     fetch("/check_session", {
+      method: "GET",
       credentials: "include",
     })
       .then((r) => {
@@ -19,17 +19,15 @@ function App() {
       })
       .then((data) => {
         setUser(data);
-        setLoading(false); 
       })
       .catch((err) => {
         console.error("Error fetching session:", err);
-        setLoading(false);
       });
   }, []);
 
   return (
     <div className="App">
-      <Outlet context={{ user, setUser, loading, courses, setCourses }} />
+      <Outlet context={{ user, setUser, courses, setCourses }} />
     </div>
   );
 }
