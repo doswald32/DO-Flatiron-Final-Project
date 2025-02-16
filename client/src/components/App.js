@@ -38,7 +38,6 @@ function App() {
     .then((data) => setCourses(data))
   }, [])
 
-
   return (
     <div className="App">
       <Outlet context={{ user, setUser, loading, courses, setCourses }} />

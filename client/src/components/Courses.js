@@ -5,8 +5,7 @@ import NavBar from "./NavBar";
 import Modal from "./Modal";
 
 function Courses() {
-
-    const { courses, setCourses } = useOutletContext();
+    const { user, setCourses } = useOutletContext();
     const [showAddCourseModal, setShowAddCourseModal] = useState(false);
     const [newCourse, setNewCourse] = useState({
         name: "",
@@ -55,13 +54,23 @@ function Courses() {
         })
     }
 
+    function userCourses() {
+        if (user) {
+            const user_courses = user.rounds.map(round => round.course);
+            return user_courses;
+        } else {
+            return [];
+        }
+    }
+        
+
     return (
         <>
             <header>
                 <NavBar />
             </header>
             <div className="courses-list">
-            {courses.map((course) => {
+            {userCourses().map((course) => {
                 return (
                     <CourseCard 
                         key={course.id}

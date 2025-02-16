@@ -40,11 +40,14 @@ def index():
     return '<h1>Project Server</h1>'
 
 class UserResource(Resource):
-    def get(self):
-        users = User.query.all()
-        users_to_dict = [user.to_dict() for user in users]
-
-        return make_response(users_to_dict, 200)
+    def get(self, id=None):
+        if id is None:
+            users = User.query.all()
+            users_to_dict = [user.to_dict() for user in users]
+            return make_response(users_to_dict, 200)
+        else:
+            user = User.query.filter(User.id == id).first()
+            return make_response(user.to_dict(), 200)
 
 
 class CreateAccountResource(Resource):
@@ -260,7 +263,7 @@ class RoundResource(Resource):
         return make_response(round.to_dict(), 200)
     
 
-api.add_resource(UserResource, '/users')
+api.add_resource(UserResource, '/users', '/users/<int:id>')
 api.add_resource(CourseResource, '/courses', '/courses/<int:id>')
 api.add_resource(CreateAccountResource, '/create_account')
 api.add_resource(LoginResource, '/login')
