@@ -16,9 +16,8 @@ function LoginSuccess({ setUser }) {
                 .then((res) => res.json())
                 .then((user) => {
                     if (user) {
-                        // Save user in context/state
                         setUser(user);
-                        navigate("/"); // Navigate to home page after login
+                        navigate("/");
                     } else {
                         console.error("User session not found.");
                     }

@@ -152,11 +152,15 @@ def authorize_google():
 
 
 class CourseResource(Resource):
-    def get(self):
-        courses = Course.query.all()
-        courses_dict = [course.to_dict() for course in courses]
-        response = make_response(courses_dict, 200)
-        return response
+    def get(self, id):
+        if id is None:
+            courses = Course.query.all()
+            courses_dict = [course.to_dict() for course in courses]
+            response = make_response(courses_dict, 200)
+            return response
+        else:
+            course = Course.query.filter(Course.id == id).first()
+            return make_response(course.to_dict(), 200)
     
     def post(self):
         data = request.get_json()
@@ -179,10 +183,10 @@ class CourseResource(Resource):
         
         try:
             data = request.get_json()
-            course.name = data.get('name', course.name)
-            course.address = data.get('address', course.address)
-            course.rating = float(data.get('rating', course.rating))
-            course.favorite = bool(data.get('favorite', course.favorite))
+            course.name = data['name']
+            course.address = data['address']
+            course.rating = float(data['rating'])
+            course.favorite = bool(data['favorite'])
 
             db.session.commit()
 

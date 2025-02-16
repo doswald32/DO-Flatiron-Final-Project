@@ -3,13 +3,22 @@ import { useOutletContext, useNavigate } from "react-router-dom";
 import NavBar from "./NavBar";
 
 function ScoreCard() {
+    const { user, setUser } = useOutletContext();
     const [date, setDate] = useState(null);
     const [isPar3, setIsPar3] = useState(false);
-    const [userId, setUserId] = useState(null);
-    const { courses } = useOutletContext();
     const [holeCount, setHoleCount] = useState(9);
     const [scorecard, setScorecard] = useState([]);
     const [course, setCourse] = useState(null);
+    const [isCreatingCourse, setIsCreatingCourse] = useState(false);
+
+    const [newCourse, setNewCourse] = useState({
+        name: "",
+        address: "",
+        website: "",
+        rating: "",
+        favorite: false,
+    })
+
     const [stats, setStats] = useState({
         holeInOnes: 0,
         eagles: 0,
@@ -30,26 +39,28 @@ function ScoreCard() {
         );
     }, [holeCount, isPar3]);
 
-    useEffect(() => {
-        fetch("/check_session")
-        .then(r => r.json())
-        .then(data => {
-            if (data.id) {
-                setUserId(data.id);
-            } else {
-                console.error("User not authenticated.");
-            }
-        })
-        .catch(err => console.error("Error fetching session:", err))
-    })
-
     const total_par = scorecard.reduce((sum, hole) => sum + hole.par, 0)
     const total_strokes = scorecard.reduce((sum, hole) => sum + hole.strokes, 0)
     const total_putts = scorecard.reduce((sum, hole) => sum + hole.putts, 0)
 
     function handleCourseChange(e) {
-        setCourse(e.target.value)
-    };
+        const selectedCourse = e.target.value;
+        if (selectedCourse === "new") {
+            setIsCreatingCourse(true);
+            setCourse(null);
+        } else {
+            setIsCreatingCourse(false);
+            setCourse(selectedCourse);
+        }
+    }
+
+    function handleNewCourseChange(e) {
+        const { name, value, type, checked } = e.target;
+        setNewCourse((prev) => ({
+            ...prev,
+            [name]: type === "checkbox" ? checked : (name === "rating" ? parseFloat(value) : value),
+        }));
+    }
 
     function handleDateChange(e) {
         setDate(e.target.value)
@@ -89,63 +100,86 @@ function ScoreCard() {
     const navigate = useNavigate()
 
     function handleSubmit() {
-        if (!userId) {
+        if (!user) {
             console.error("Error: User ID missing.");
             return;
         }
 
-        if (!course || !date) {
-            alert("Please select a course and date before submitting.");
+        if (!date) {
+            alert("Please select a date before submitting.");
             return;
         }
 
+        if (isCreatingCourse) {
+            fetch("/courses", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ newCourse }),
+            })
+            .then((response) => response.json())
+            .then((createdCourse) => {
+                console.log("New Course Created:", createdCourse);
+                submitRound(createdCourse.id); 
+            })
+            .catch((error) => console.error("Error creating course:", error));
+        } else {
+            submitRound(course);
+        }
+    }
+
+    function fetchUpdatedUser() {
+        fetch(`/users/${user.id}`)
+            .then((r) => r.json())
+            .then((updatedUser) => {
+                setUser(updatedUser); 
+            })
+            .catch((error) => console.error("Error fetching updated user:", error));
+    }
+
+    function submitRound(courseId) {
         const scoreCardData = {
             stats,
             total_par,
             total_strokes,
             total_putts,
         };
-
+    
         fetch("/scorecards", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(scoreCardData),
         })
-        .then(response => response.json())
-        .then(scoreCardResponse => {
-            console.log("Scorecard submitted:", scoreCardResponse)
-
+        .then((response) => response.json())
+        .then((scoreCardResponse) => {
             if (scoreCardResponse.id) {
                 const roundData = {
-                    user_id: userId,
-                    course_id: course,
+                    user_id: user.id,
+                    course_id: courseId,
                     scorecard_id: scoreCardResponse.id,
                     date: date,
                     is_par3: isPar3,
                     full_18: holeCount === 18,
                 };
-
+    
                 return fetch("/rounds", {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(roundData),
                 });
             } else {
-                throw new Error ("Failed to retrieve scorecard ID");
+                throw new Error("Failed to retrieve scorecard ID");
             }
         })
-        .then(r => r.json())
-        .then(roundResponse => {
+        .then((r) => r.json())
+        .then((roundResponse) => {
             console.log("Round submitted:", roundResponse);
-            alert("Round successfully submitted!")
+            fetchUpdatedUser();
+            alert("Round successfully submitted!");
             navigate("/scores");
         })
-        .catch(error => console.error("Error submitting round:", error));
-    };
+        .catch((error) => console.error("Error submitting round:", error));
+    }
+
 
     return (
         <>
@@ -172,12 +206,38 @@ function ScoreCard() {
                     </button>
                     <select id="course-dropdown" onChange={handleCourseChange}>
                         <option value="">Select a Course</option>
-                        {courses.map((course) => {
-                            return <option key={course.id} value={course.id}>{course.name}</option>
+                        {user.rounds.map((round) => {
+                            return <option key={round.course.id} value={round.course.id}>{round.course.name}</option>
                         })}
+                        <option value="new">Create New Course</option>
                     </select>
                     <input type="date" onChange={handleDateChange}></input>
                 </div>
+                {isCreatingCourse && (
+                    <div className="new-course-form">
+                        <h3>New Course Details</h3>
+                        <label>
+                            Name:
+                            <input type="text" name="name" value={newCourse.name} onChange={handleNewCourseChange} />
+                        </label>
+                        <label>
+                            Address:
+                            <input type="text" name="address" value={newCourse.address} onChange={handleNewCourseChange} />
+                        </label>
+                        <label>
+                            Website:
+                            <input type="text" name="website" value={newCourse.website} onChange={handleNewCourseChange} />
+                        </label>
+                        <label>
+                            Rating:
+                            <input type="number" name="rating" value={newCourse.rating} onChange={handleNewCourseChange} />
+                        </label>
+                        <label>
+                            Favorite:
+                            <input type="checkbox" name="favorite" checked={newCourse.favorite} onChange={handleNewCourseChange} />
+                        </label>
+                    </div>
+                )}
                 <div>
                     <table>
                         <thead>

@@ -27,17 +27,6 @@ function App() {
       });
   }, []);
 
-  useEffect(() => {
-    fetch("http://127.0.0.1:5555/courses")
-    .then((r) => {
-      if (!r.ok) {
-        throw new Error(`HTTP error! Status: ${reportError.status}`);
-      }
-      return r.json();
-    })
-    .then((data) => setCourses(data))
-  }, [])
-
   return (
     <div className="App">
       <Outlet context={{ user, setUser, loading, courses, setCourses }} />

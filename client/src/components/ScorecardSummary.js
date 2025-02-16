@@ -1,4 +1,4 @@
-function ScorecardSummary({ id, date, course, holes, crs_par, strokes, score, putts, bogey_worse, bogey, par, birdie, eagle, hoi }) {
+function ScorecardSummary({ date, course, holes, crs_par, strokes, score, putts, bogey_worse, bogey, par, birdie, eagle, hoi }) {
     return (
         <div className="scorecard-summary-container">
             <div className="scorecard-summary-info-container">

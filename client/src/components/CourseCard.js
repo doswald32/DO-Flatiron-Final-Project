@@ -4,7 +4,7 @@ import Modal from "./Modal";
 
 function CourseCard({ id, name, address, rating, favorite }) {
 
-    const { setCourses } = useOutletContext();
+    const { setUser, user } = useOutletContext();
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
 
@@ -34,11 +34,13 @@ function CourseCard({ id, name, address, rating, favorite }) {
             }
             return r.json();
         })
-        .then((updatedCourse) => {
-            setCourses((prevCourses) =>
-                prevCourses.map((course) => (course.id === id ? updatedCourse : course))
-            );
-            setShowEditModal(false);
+        .then(() => {
+            return fetch(`/users/${user.id}`);
+        })
+        .then((r) => r.json())
+        .then((updatedUser) => {
+            setUser(updatedUser); 
+            setShowEditModal(false); 
         })
         .catch((error) => {
             console.error("Error updating course:", error);
@@ -60,7 +62,7 @@ function CourseCard({ id, name, address, rating, favorite }) {
     function handleFavoriteChange(e) {
         setEditedCourse((prev) => ({...prev, favorite: e.target.checked}))
     }
-    
+
 
     return (
         <div className="course-card-container">
@@ -84,10 +86,11 @@ function CourseCard({ id, name, address, rating, favorite }) {
                         if (!r.ok) {
                             throw new Error("Error deleting course.");
                         }
-                        return r.json();
+                        return fetch(`/users/${user.id}`);
                     })
-                    .then(() => {
-                        setCourses((prevCourses) => prevCourses.filter((course) => course.id !== id));
+                    .then((r) => r.json())
+                    .then((updatedUser) => {
+                        setUser(updatedUser);
                         setShowDeleteModal(false);
                     })
                     .catch((error) => {

@@ -137,7 +137,7 @@ if __name__ == '__main__':
             par_3=False,
             full_18=True,
             user=u2,
-            course=c1,
+            course=c2,
             scorecard=s2,
         )
         r3 = Round(

@@ -10,6 +10,7 @@ function Courses() {
     const [newCourse, setNewCourse] = useState({
         name: "",
         address: "",
+        website: "",
         rating: "",
         favorite: false
     })
@@ -20,6 +21,10 @@ function Courses() {
 
     function handleAddressChange(e) {
         setNewCourse((prev) => ({...prev, address: e.target.value}))
+    }
+
+    function handleWebsiteChange(e) {
+        setNewCourse((prev) => ({...prev, website: e.target.value}))
     }
 
     function handleRatingChange(e) {
@@ -77,6 +82,7 @@ function Courses() {
                         id={course.id}
                         name={course.name}
                         address={course.address}
+                        website={course.website}
                         rating={course.rating}
                         favorite={course.favorite}
                     />
@@ -95,6 +101,10 @@ function Courses() {
                     <label>
                         Address:
                         <input type="text" name="address" value={newCourse.address} onChange={handleAddressChange} />
+                    </label>
+                    <label>
+                        Website:
+                        <input type="text" name="website" value={newCourse.website} onChange={handleWebsiteChange} />
                     </label>
                     <label>
                         Rating:

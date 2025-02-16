@@ -15,8 +15,6 @@ function Scores() {
         }
     }
 
-    console.log(userScores())
-
     return (
         <>
             <header>
