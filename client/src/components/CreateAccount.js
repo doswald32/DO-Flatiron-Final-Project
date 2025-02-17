@@ -1,12 +1,13 @@
 import React from "react";
 import logo from "../Assets/MyCaddyLogo.png";
-import { Link, useOutletContext, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useUser } from "./UserContext";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
 function CreateAccount() {
 
-  const { setUser } = useOutletContext();
+  const { setUser } = useUser();
   const navigate = useNavigate();
 
     const formSchema = Yup.object({

@@ -2,7 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./components/App";
 import "./index.css";
-import { createBrowserRouter, RouterProvider, useOutletContext, Navigate } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+// import { useOutletContext, Navigate } from "react-router-dom";
+import { UserProvider } from "./components/UserContext";
 import Home from "./components/Home";
 import Login from "./components/Login";
 import CreateAccount from "./components/CreateAccount";
@@ -11,21 +13,19 @@ import ScoreCard from "./components/ScoreCard";
 import CourseDetail from "./components/CourseDetail";
 import Scores from "./components/Scores";
 
+// function OutletWrapper({ children }) {
+//     const { user, loading } = useOutletContext();
 
+//     if (loading) {
+//         return <div>Loading...</div>;
+//     }
 
-function OutletWrapper({ children }) {
-    const { user, loading } = useOutletContext();
-
-    if (loading) {
-        return <div>Loading...</div>;
-    }
-
-    if (!user) {
-        return <Navigate to="/login" replace />
-    } else {
-        return children;
-    }
-}
+//     if (!user) {
+//         return <Navigate to="/login" replace />
+//     } else {
+//         return children;
+//     }
+// }
 
 const router = createBrowserRouter([
     {
@@ -35,9 +35,9 @@ const router = createBrowserRouter([
             {
                 path: "/",
                 element: (
-                    <OutletWrapper>
+                    // <OutletWrapper>
                         <Home />
-                    </OutletWrapper>
+                    // </OutletWrapper>
                 ),
             },
             {
@@ -70,4 +70,4 @@ const router = createBrowserRouter([
 
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<RouterProvider router={router}/>)
+root.render(<UserProvider><RouterProvider router={router}/></UserProvider>)

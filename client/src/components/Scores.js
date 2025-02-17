@@ -1,10 +1,11 @@
 import NavBar from "./NavBar";
-import { Link, useOutletContext } from "react-router-dom"
+import { Link } from "react-router-dom";
+import { useUser } from "./UserContext";
 import ScorecardSummary from "./ScorecardSummary";
 
 function Scores() {
 
-    const { user } = useOutletContext();
+    const { user } = useUser();
 
     function userScores() {
         if (user) {

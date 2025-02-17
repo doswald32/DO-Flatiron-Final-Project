@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "./UserContext";
 import Modal from "./Modal";
 
 function CourseCard({ id, name, address, rating, favorite }) {
 
     const navigate = useNavigate()
 
-    const { setUser, user } = useOutletContext();
+    const { setUser, user } = useUser();
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
 

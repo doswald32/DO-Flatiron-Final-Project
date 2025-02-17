@@ -1,10 +1,10 @@
-import { useOutletContext } from "react-router-dom";
+import { useUser } from "./UserContext"
 import CourseCard from "./CourseCard";
 import NavBar from "./NavBar";
 
 function Courses() {
     
-    const { user } = useOutletContext();
+    const { user } = useUser();
 
     function userCourses() {
         if (user) {

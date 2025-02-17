@@ -1,9 +1,27 @@
-import { useOutletContext } from "react-router-dom";
+import { useUser } from "./UserContext";
 import NavBar from "./NavBar";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
 
-    const { user } = useOutletContext();
+    const navigate = useNavigate();
+    const { user, loading } = useUser();
+
+    useEffect(() => {
+        if (!loading && !user) {
+            navigate("/login", { replace: true });
+        }
+    }, [user, loading, navigate]); 
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (!user) {
+        return null; 
+    }
+
     const rounds = user.rounds
     const bestRounds = [...rounds]
         .sort((a, b) => a.scorecard.usr_scr_to_par - b.scorecard.user_scr_to_par)
@@ -21,7 +39,6 @@ function Home() {
         },
         { par: 0, birdie: 0, eagle: 0, hoi: 0 }
     );
-    
 
     return (
         <main>

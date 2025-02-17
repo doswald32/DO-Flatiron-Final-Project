@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useOutletContext, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "./UserContext";
 import NavBar from "./NavBar";
 
 function ScoreCard() {
-    const { user, setUser } = useOutletContext();
+    const { user, setUser } = useUser();
     const [date, setDate] = useState(null);
     const [isPar3, setIsPar3] = useState(false);
     const [holeCount, setHoleCount] = useState(9);

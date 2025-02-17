@@ -1,10 +1,11 @@
 import NavBar from "./NavBar";
-import { useParams, useOutletContext } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { useUser } from "./UserContext";
 
 function CourseDetail () {
 
     const { id } = useParams();
-    const { user } = useOutletContext();
+    const { user } = useUser();
 
     const round = user.rounds.filter(round => round.course.id === Number(id))[0]
     const course = round.course

@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useUser } from "./UserContext";
 import Modal from "./Modal";
 
 function ScorecardSummary({ id, date, course, holes, crs_par, strokes, score, putts, bogey_worse, bogey, par, birdie, eagle, hoi }) {
     
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const { setUser, user } = useOutletContext();
+    const { setUser, user } = useUser();
     
     return (
         <div className="scorecard-summary-container">

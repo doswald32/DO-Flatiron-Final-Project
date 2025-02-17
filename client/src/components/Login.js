@@ -1,12 +1,13 @@
 import MyCaddyLogo from "../Assets/MyCaddyLogo.png";
 import GoogleLogo from "../Assets/google-logo.webp";
-import { Link, useOutletContext, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useUser } from "./UserContext";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
 
 function Login() {
-    const { setUser } = useOutletContext();
+    const { setUser } = useUser();
     const navigate = useNavigate();
   
     const formSchema = Yup.object({

@@ -1,9 +1,10 @@
-import { useOutletContext, useNavigate, NavLink } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
+import { useUser } from "./UserContext";
 import logo from "../Assets/MyCaddyLogo.png";
 
 function NavBar() {
 
-    const { setUser } = useOutletContext();
+    const { setUser } = useUser();
     const navigate = useNavigate();
 
     function handleLogout() {
