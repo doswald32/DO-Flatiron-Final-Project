@@ -28,33 +28,52 @@ function Home() {
             <header>
                 <NavBar />
             </header>
-            <div>
-                <h1>Welcome {user.username}!</h1>
-            </div>
-            <div className="career-stats">
-                <h2>Career Totals:</h2>
-                <p>Rounds Played: {totalRounds}</p>
-                <p>Pars: {totals.par}</p>
-                <p>Birdies: {totals.birdie}</p>
-                <p>Eagles: {totals.eagle}</p>
-                <p>Holes-in-One: {totals.hoi}</p>
-            </div>
-            <div className="top-rounds-container">
-                <div className="top-rounds-scroll">
-                {bestRounds.map((round) => (
-                        <div key={round.id} className="round-card">
-                            <p>Date: {round.date}</p>
-                            <p>{round.course.name}</p>
-                            <p>Course Par: {round.scorecard.crs_par}</p>                           
-                            <p>Score: {round.scorecard.usr_strokes}</p>
-                            <p>Putts: {round.scorecard.putts}</p>
+            <h1 className="welcome-message">Welcome, {user.first_name}!</h1>
+            <div className="main-container">
+                <div className="career-totals">
+                    <h2>Career Totals</h2>
+                    <p className="total-rounds">{totalRounds}</p>
+                    <p className="rounds-label">Rounds Played</p>
+                    <div className="stats-grid">
+                        <div>
+                            <p className="stat-number">{totals.par}</p>
+                            <p className="stat-label">Pars</p>
                         </div>
-                    ))}
+                        <div>
+                            <p className="stat-number">{totals.birdie}</p>
+                            <p className="stat-label">Birdies</p>
+                        </div>
+                        <div>
+                            <p className="stat-number">{totals.eagle}</p>
+                            <p className="stat-label">Eagles</p>
+                        </div>
+                        <div>
+                            <p className="stat-number">{totals.hoi}</p>
+                            <p className="stat-label">Holes-in-One</p>
+                        </div>
+                    </div>
                 </div>
-
+                <div className="best-rounds">
+                <h2>Best Rounds</h2>
+                    <div className="rounds-list">
+                        {bestRounds.map((round) => (
+                            <div key={round.id} className="round-card">
+                                <div className="round-info">
+                                    <p className="round-date">Date: {new Date(round.date).toLocaleDateString()}</p>
+                                    <p className="round-course"><strong>{round.course.name}</strong></p>
+                                    <p>Course Par: {round.scorecard.crs_par} &nbsp; | &nbsp; Score: {round.scorecard.usr_strokes} &nbsp; | &nbsp; Putts: {round.scorecard.putts}</p>
+                                </div>
+                                <div className="round-score">
+                                    <p>Score</p>
+                                    <span className="score-value">{round.scorecard.usr_scr_to_par === 0 ? "E" : round.scorecard.usr_scr_to_par > 0 ? `+${round.scorecard.usr_scr_to_par}` : round.scorecard.usr_scr_to_par}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </div>
         </main>
-    )
+    );
 }
 
 export default Home;

@@ -24,31 +24,20 @@ function NavBar() {
           });
       }
 
-    return (
-      <>
-        <img id="navbar-logo" src={logo} alt="my caddy logo"/>
+      return (
         <nav>
-          <NavLink
-          to="/"
-          className="nav-link"
-          >
-            Home
-          </NavLink>
-          <NavLink
-          to="/courses"
-          className="nav-link"
-          >
-            Courses
-          </NavLink>
-          <NavLink
-          to="/scores"
-          className="nav-link"
-          >
-            Scorecards
-          </NavLink>
-          <button className="logout-button" onClick={handleLogout}>Logout</button>
+            <div className="nav-left">
+                <img id="navbar-logo" src={logo} alt="my caddy logo"/>
+            </div>
+            <div className="nav-center">
+                <NavLink to="/" className="nav-link">Home</NavLink>
+                <NavLink to="/courses" className="nav-link">Courses</NavLink>
+                <NavLink to="/scores" className="nav-link">Scorecards</NavLink>
+            </div>
+            <div className="nav-right">
+                <button className="logout-button" onClick={handleLogout}>Logout</button>
+            </div>
         </nav>
-      </>
     )
 }
 
