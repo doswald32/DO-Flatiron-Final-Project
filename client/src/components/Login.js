@@ -1,4 +1,5 @@
-import logo from "../Assets/MyCaddyLogo.png";
+import MyCaddyLogo from "../Assets/MyCaddyLogo.png";
+import GoogleLogo from "../Assets/google-logo.webp";
 import { Link, useOutletContext, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -52,7 +53,7 @@ function Login() {
 
     return (
         <main className="login-container">
-            <img id="logo" src={logo} alt="my caddy logo"/>
+            <img id="logo" src={MyCaddyLogo} alt="my caddy logo"/>
             <div className="login-window-border">
                 <div className="login-window">
                     <h1>Sign in</h1>
@@ -73,9 +74,12 @@ function Login() {
                           onChange={formik.handleChange}
                         />
                         <button type="submit" className="login-buttons">Log In</button>
-                        <button className="login-google" value="Login with Google" onClick={handleGoogleLogin}>Log In Using Google</button>
+                        <button className="login-google" onClick={handleGoogleLogin}>
+                          <img src={GoogleLogo} alt="Google Logo" className="google-logo" />
+                          Sign in with Google
+                        </button>
                         <hr></hr>
-                        <span className="login-text">New to Jaunt? Click below to create an account!</span>
+                        <span className="login-text">New to MyCaddy? Click below to create an account!</span>
                         <Link to="/createAccount"><button className="login-buttons">Create Account</button></Link>
                     </form>
                 </div>
