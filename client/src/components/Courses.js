@@ -20,6 +20,7 @@ function Courses() {
             <header>
                 <NavBar />
             </header>
+            <h2 className="courses-title">Courses</h2>
             <div className="courses-list">
             {userCourses().map((course) => {
                 return (

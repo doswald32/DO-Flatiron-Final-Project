@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link, useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import Modal from "./Modal";
 
 function CourseCard({ id, name, address, rating, favorite }) {
+
+    const navigate = useNavigate()
 
     const { setUser, user } = useOutletContext();
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -65,15 +67,23 @@ function CourseCard({ id, name, address, rating, favorite }) {
 
 
     return (
-        <div className="course-card-container">
-            <div className="course-card-info-container">
-                <p>Course Name: {name}</p>
-                <p>Address: {address}</p>
+        <div className="course-card" onClick={() => navigate(`/course-detail/${id}`)}>
+            <div className="card-header">
+            <span className="favorite-star">{favorite ? "⭐" : "\u00A0"}</span>
+                <h3>{name}</h3>
+                <button className="delete-button" onClick={(e) => {
+                    e.stopPropagation();
+                    setShowDeleteModal(true);
+                }}>X</button>
+            </div>
+            <div>
+                <p>{address}</p>
                 <p>Rating: {rating}</p>
-                <p>Favorite: {favorite ? 'True' : null}</p>
-                <Link className="course-detail-button" to={`/course-detail/${id}`}>Course Detail</Link>
-                <button className="course-edit-button" onClick={() => setShowEditModal(true)}>Edit</button>
-                <button className="course-delete-button" onClick={() => setShowDeleteModal(true)}>Delete</button>
+
+                <button className="course-edit-button" onClick={(e) => {
+                    e.stopPropagation();
+                    setShowEditModal(true);
+                }}>Edit</button>
             </div>
 
             <Modal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
@@ -101,7 +111,7 @@ function CourseCard({ id, name, address, rating, favorite }) {
             </Modal>
             <Modal isOpen={showEditModal} onClose={() => setShowEditModal(false)}>
                 <h2>Edit Course</h2>
-                    <form onSubmit={handleCourseUpdate}>
+                    <form className="edit-form" onSubmit={handleCourseUpdate}>
                         <label>
                             Name:
                             <input type="text" name="name" value={editedCourse.name} onChange={handleNameChange} />

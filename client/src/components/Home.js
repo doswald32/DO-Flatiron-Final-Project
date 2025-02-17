@@ -28,7 +28,7 @@ function Home() {
             <header>
                 <NavBar />
             </header>
-            <h1 className="welcome-message">Welcome, {user.first_name}!</h1>
+            <h1 className="welcome-message">Welcome, {user.first_name ? user.first_name : user.email}!</h1>
             <div className="main-container">
                 <div className="career-totals">
                     <h2>Career Totals</h2>

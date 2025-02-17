@@ -14,29 +14,30 @@ function CourseDetail () {
             <header>
                 <NavBar />
             </header>
-            <h1>Course Detail</h1>
-            {course ? (
-                <>
-                    <h2>Name: {course.name}</h2>
-                    <p>Address: {course.address}</p>
-                    <p>
-                        Website:{" "}
-                        {course.website ? (
-                            <a 
-                                href={course.website} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                            >
-                                {course.website}
-                            </a>
-                        ) : (
-                            "No website available"
-                        )}
-                    </p>
-                </>
-            ) : (
-                <p>Course not found.</p>
-            )}
+            <h1 className="course-detail-title">Course Detail</h1>
+            <div className="course-detail-info">
+                {course ? (
+                    <>
+                        <h2>{course.name}</h2>
+                        <p>
+                            Website:{" "}
+                            {course.website ? (
+                                <a 
+                                    href={course.website} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                >
+                                    {course.website}
+                                </a>
+                            ) : (
+                                "No website available"
+                            )}
+                        </p>
+                    </>
+                ) : (
+                    <p>Course not found.</p>
+                )}
+            </div>
         </>
     );
 }
