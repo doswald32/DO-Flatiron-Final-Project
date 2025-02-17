@@ -188,7 +188,7 @@ function ScoreCard() {
                 <NavBar />
             </header>
             <div className="scorecard">
-                <h2>Golf Scorecard</h2>
+                <h2 className="scorecard-title">Golf Scorecard</h2>
                 <div>
                     <button onClick={() => {
                             setIsPar3(!isPar3);

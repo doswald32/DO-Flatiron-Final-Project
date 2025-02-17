@@ -21,7 +21,8 @@ function Scores() {
             <header>
                 <NavBar />
             </header>
-            <div className="scores-list">
+            <h2 className="scores-title">Scorecards</h2>
+            <div className="scores-container">
             {userScores().map((round) => {
                 return (
                     <ScorecardSummary
@@ -43,8 +44,11 @@ function Scores() {
                     />
                 )
             })}
+            <Link to='/scorecard' className="add-scorecard">
+                + Add a Scorecard
+            </Link>
             </div>
-            <Link to='/scorecard'><button>Enter New Round</button></Link>
+            
         </>
     )
 }

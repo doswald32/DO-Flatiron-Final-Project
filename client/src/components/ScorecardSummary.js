@@ -6,50 +6,60 @@ function ScorecardSummary({ id, date, course, holes, crs_par, strokes, score, pu
     
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const { setUser, user } = useUser();
-    
+
+    function handleDelete() {
+        fetch(`/scorecards/${id}`, { method: "DELETE" })
+            .then((r) => {
+                if (!r.ok) throw new Error("Error deleting scorecard.");
+                return fetch(`/users/${user.id}`);
+            })
+            .then((r) => r.json())
+            .then((updatedUser) => {
+                setUser(updatedUser);
+                setShowDeleteModal(false);
+            })
+            .catch((error) => console.error("Error deleting scorecard:", error));
+    }
+
     return (
-        <div className="scorecard-summary-container">
-            <div className="scorecard-summary-info-container">
-                <p>Date: {date}</p>
-                <p>Course: {course}</p>
-                <p>Holes: {holes}</p>
-                <p>Par: {crs_par}</p>
-                <p>Strokes: {strokes}</p>
-                <p>Score to Par: {score > 0 ? ` +${score}` : score < 0 ? ` -${score}` : " E"}</p>
-                <p>Putts: {putts}</p>
-                <p>Bogey+: {bogey_worse}</p>
-                <p>Bogeys: {bogey}</p>
-                <p>Pars: {par}</p>
-                <p>Birdies: {birdie}</p>
-                <p>Ealges: {eagle}</p>
-                <p>HOI: {hoi}</p>
-                <button className="scorecard-delete-button" onClick={() => setShowDeleteModal(true)}>Delete</button>
+        <div className="scorecard-summary">
+            <div className="scorecard-header">
+                <span className="scorecard-date">{new Date(date).toLocaleDateString()}</span>
+                <button className="delete-scorecard" onClick={(e) => {
+                    e.stopPropagation();
+                    setShowDeleteModal(true);
+                }}>X</button>
             </div>
+            <h3 className="scorecard-course">{course}</h3>
+            <p className="scorecard-holes">{holes} holes</p>
+            <div className="scorecard-stats-1">
+                <p>
+                    Par {crs_par} &nbsp; | 
+                    &nbsp; Strokes {strokes} &nbsp; | 
+                    &nbsp; Score {score > 0 ? `+${score}` : score < 0 ? `-${score}` : "E"} &nbsp; | 
+                    &nbsp; Putts {putts}
+                </p>
+            </div>
+            <div className="scorecard-stats-2">
+                <div>HOI: {hoi}</div>
+                <div>Eagles: {eagle}</div>
+                <div>Birdies: {birdie}</div>
+                <div>Pars: {par}</div>
+                <div>Bogeys: {bogey}</div>
+                <div>Bogey+: {bogey_worse}</div>
+            </div>
+
+            {/* Modal for Delete Confirmation */}
             <Modal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
+                <h2>Confirm Deletion</h2>
                 <p>Are you sure you want to delete this scorecard?</p>
-                <button onClick={() => {
-                    fetch(`/scorecards/${id}`, {
-                        method: "DELETE",
-                    })
-                    .then((r) => {
-                        if (!r.ok) {
-                            throw new Error("Error deleting scorecard.");
-                        }
-                        return fetch(`/users/${user.id}`);
-                    })
-                    .then((r) => r.json())
-                    .then((updatedUser) => {
-                        setUser(updatedUser);
-                        setShowDeleteModal(false);
-                    })
-                    .catch((error) => {
-                        console.error("Error deleting scorecard:", error);
-                    });
-                }}>Yes</button>
-                <button onClick={() => setShowDeleteModal(false)}>Cancel</button>
+                <div className="modal-buttons">
+                    <button className="delete-confirm" onClick={handleDelete}>Yes, Delete</button>
+                    <button className="cancel-button" onClick={() => setShowDeleteModal(false)}>Cancel</button>
+                </div>
             </Modal>
         </div>
-    )
+    );
 }
 
 export default ScorecardSummary;
