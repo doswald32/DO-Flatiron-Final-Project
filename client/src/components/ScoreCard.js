@@ -5,6 +5,7 @@ import NavBar from "./NavBar";
 
 function ScoreCard() {
     const { user, setUser } = useUser();
+    const navigate = useNavigate()
     const [date, setDate] = useState(null);
     const [isPar3, setIsPar3] = useState(false);
     const [holeCount, setHoleCount] = useState(9);
@@ -98,8 +99,6 @@ function ScoreCard() {
         setStats({ holeInOnes, eagles, birdies, pars, bogeys, bogey_worse });
     };
 
-    const navigate = useNavigate()
-
     function handleSubmit() {
         if (!user) {
             console.error("Error: User ID missing.");
@@ -187,10 +186,10 @@ function ScoreCard() {
             <header>
                 <NavBar />
             </header>
-            <div className="scorecard">
+            <div className="scorecard-container">
                 <h2 className="scorecard-title">Golf Scorecard</h2>
-                <div>
-                    <button onClick={() => {
+                <div className="scorecard-controls">
+                    <button className="par-3-button" onClick={() => {
                             setIsPar3(!isPar3);
                             setHoleCount(9);
                         }}
@@ -198,21 +197,21 @@ function ScoreCard() {
                         {isPar3 ? "Par 3: ON" : "Par 3: OFF"}
                     </button>
 
-                    <button onClick={() => {
+                    <button className="hole-count-button" onClick={() => {
                             if (!isPar3) setHoleCount(holeCount === 9 ? 18 : 9);
                         }}
                         disabled={isPar3}
                     >
                     {holeCount} Holes
                     </button>
-                    <select id="course-dropdown" onChange={handleCourseChange}>
+                    <select id="dropdown" onChange={handleCourseChange}>
                         <option value="">Select a Course</option>
                         {user.rounds.map((round) => {
                             return <option key={round.course.id} value={round.course.id}>{round.course.name}</option>
                         })}
                         <option value="new">Create New Course</option>
                     </select>
-                    <input type="date" onChange={handleDateChange}></input>
+                    <input type="date" className="date-picker" onChange={handleDateChange}></input>
                 </div>
                 {isCreatingCourse && (
                     <div className="new-course-form">
@@ -240,7 +239,7 @@ function ScoreCard() {
                     </div>
                 )}
                 <div>
-                    <table>
+                    <table className="scorecard-table">
                         <thead>
                             <tr>
                                 <th>Hole</th>
@@ -280,17 +279,7 @@ function ScoreCard() {
                     </table>
                 </div>
 
-                <div>
-                    <h3>Round Summary</h3>
-                    <p>Hole-in-Ones: {stats.holeInOnes}</p>
-                    <p>Eagles: {stats.eagles}</p>
-                    <p>Birdies: {stats.birdies}</p>
-                    <p>Pars: {stats.pars}</p>
-                    <p>Bogeys: {stats.bogeys}</p>
-                    <p>Bogey+: {stats.bogey_worse}</p>
-                </div>
-
-                <button onClick={handleSubmit}>
+                <button className="submit-scorecard" onClick={handleSubmit}>
                     Submit Scorecard
                 </button>
             </div>

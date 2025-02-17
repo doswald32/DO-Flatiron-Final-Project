@@ -584,3 +584,105 @@ nav {
     background: #f7f7f7;
 }
 
+.scorecard-container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.scorecard-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    background: rgb(14, 53, 99);
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.scorecard-controls {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.dropdown, .date-picker {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid gray;
+}
+
+.scorecard-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.scorecard-table th, .scorecard-table td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.scorecard-table input {
+    width: 80px;
+    padding: 5px;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.submit-scorecard, .hole-count-button, .par-3-button {
+    background: rgb(14, 53, 99);
+    color: white;
+    margin-top: 5px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.submit-scorecard:hover, .hole-count-button:hover, .par-3-button:hover {
+    background: rgb(12, 45, 80);
+}
+
+.new-course-form {
+    background: white;
+    padding: 15px;
+    width: 100%;
+    max-width: 800px;
+    margin: 15px auto;
+}
+
+.new-course-form h3 {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.new-course-form label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.new-course-form input[type="text"],
+.new-course-form input[type="number"] {
+    width: 70%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.new-course-form input[type="checkbox"] {
+    transform: scale(1.2);
+    margin-left: 10px;
+}
+
