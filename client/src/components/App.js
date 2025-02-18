@@ -23,7 +23,7 @@ function App() {
       .catch((err) => {
         console.error("Error fetching session:", err);
       });
-  }, [setUser]);
+  }, []);
 
   return (
     <div className="App">
