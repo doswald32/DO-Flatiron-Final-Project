@@ -48,8 +48,6 @@ function ScorecardSummary({ id, date, course, holes, crs_par, strokes, score, pu
                 <div>Bogeys: {bogey}</div>
                 <div>Bogey+: {bogey_worse}</div>
             </div>
-
-            {/* Modal for Delete Confirmation */}
             <Modal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
                 <h2>Confirm Deletion</h2>
                 <p>Are you sure you want to delete this scorecard?</p>

@@ -244,7 +244,6 @@ nav {
     margin-top: 5px;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
     .main-container {
         flex-direction: column;
@@ -282,7 +281,6 @@ nav {
     align-items: center;
 }
 
-/* Courses container */
 .courses-list {
     display: flex;
     justify-content: center;
@@ -315,21 +313,18 @@ nav {
     width: 100%;
 }
 
-/* Favorite Star */
 .favorite-star {
     font-size: 24px;
     color: gold;
     width: 24px;
 }
 
-/* Course Name */
 .course-name {
     font-size: 18px;
     font-weight: bold;
     text-align: center;
 }
 
-/* Delete Button */
 .delete-button {
     background: none;
     border: none;
@@ -370,7 +365,6 @@ nav {
     background: gray;
 }
 
-/* Course Info */
 .course-address {
     text-align: center;
     color: gray;
@@ -381,7 +375,6 @@ nav {
     font-weight: bold;
 }
 
-/* Edit Button */
 .edit-button {
     background: rgb(14, 53, 99);
     color: white;
@@ -401,7 +394,6 @@ nav {
     pointer-events: auto;
 }
 
-/* Modal Styles */
 .modal {
     background: white;
     padding: 20px;
@@ -431,7 +423,6 @@ nav {
     border-radius: 5px;
 }
 
-/* Checkbox Label */
 .checkbox-label {
     display: flex;
     align-items: center;
@@ -439,14 +430,12 @@ nav {
     font-size: 16px;
 }
 
-/* Modal Buttons */
 .modal-buttons {
     margin-top: 15px;
     display: flex;
     justify-content: space-between;
 }
 
-/* Save & Cancel Buttons */
 .save-button, .cancel-button {
     padding: 8px 15px;
     border: none;
@@ -481,13 +470,12 @@ nav {
     justify-content: center;
 }
 
-/* Scorecard Styles */
 .scorecard-summary,
 .add-scorecard {
     background: white;
     border-radius: 15px;
     padding: 20px;
-    width: 340px; /* Ensure all cards have the same width */
+    width: 340px; 
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.4);
     display: flex;
     flex-direction: column;
@@ -513,7 +501,6 @@ nav {
     width: 100%;
 }
 
-/* Course Name */
 .scorecard-course {
     font-size: 18px;
     font-weight: bold;
@@ -521,7 +508,6 @@ nav {
     margin-bottom: 0;
 }
 
-/* Holes */
 .scorecard-holes {
     text-align: center;
     font-size: 14px;
@@ -529,7 +515,6 @@ nav {
     margin-top: 5px;
 }
 
-/* Scorecard Stats */
 .scorecard-stats-1 {
     display: flex;
     justify-content: space-between;
@@ -539,15 +524,14 @@ nav {
 
 .scorecard-stats-2 {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Three items per row */
-    gap: 10px; /* Adds spacing between items */
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 10px; 
     padding: 10px;
     font-size: 14px;
     text-align: center;
     width: 100%;
 }
 
-/* Delete Button */
 .delete-scorecard {
     background: none;
     border: none;
@@ -560,7 +544,6 @@ nav {
     color: red;
 }
 
-/* Add Scorecard Button */
 .add-scorecard {
     background: white;
     border-radius: 15px;

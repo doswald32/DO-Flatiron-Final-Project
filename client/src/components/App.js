@@ -1,10 +1,10 @@
 import "../App.css";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Outlet } from "react-router-dom";
+import { useUser } from "./UserContext";
 
 function App() {
-  const [user, setUser] = useState(null);
-  const [courses, setCourses] = useState(null);
+  const { setUser } = useUser();
 
   useEffect(() => {
     fetch("/check_session", {
@@ -23,11 +23,11 @@ function App() {
       .catch((err) => {
         console.error("Error fetching session:", err);
       });
-  }, []);
+  }, [setUser]);
 
   return (
     <div className="App">
-      <Outlet context={{ user, setUser, courses, setCourses }} />
+      <Outlet/>
     </div>
   );
 }
