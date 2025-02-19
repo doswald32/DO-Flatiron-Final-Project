@@ -11,6 +11,7 @@ import Courses from "./components/Courses";
 import ScoreCard from "./components/ScoreCard";
 import CourseDetail from "./components/CourseDetail";
 import Scores from "./components/Scores";
+import GoogleAuthSuccess from "./components/GoogleAuthSuccess";
 
 const router = createBrowserRouter([
     {
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
             {
                 path: "/scores",
                 element: <Scores />
+            },
+            {
+                path: "/google-auth-success",
+                element: <GoogleAuthSuccess />
             }
         ]
     }

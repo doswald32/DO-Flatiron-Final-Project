@@ -142,8 +142,7 @@ def authorize_google():
         
         session['user_id'] = user.id
         session['oauth_token'] = token
-        print(f"✅ Google Auth: Session set with user ID: {session.get('user_id')}")
-        print(f"✅ Full session data: {session}")
+        print(f"Google Auth: Session user ID: {session.get('user_id')}")
 
         return jsonify({
             "message": "Authentication successful",

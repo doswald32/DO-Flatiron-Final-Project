@@ -6,17 +6,13 @@ import { useNavigate } from "react-router-dom";
 function Home() {
 
     const navigate = useNavigate();
-    const { user, loading } = useUser();
+    const { user } = useUser();
 
     useEffect(() => {
-        if (!loading && !user) {
+        if (!user) {
             navigate("/login", { replace: true });
         }
-    }, [user, loading, navigate]); 
-
-    if (loading) {
-        return <div>Loading...</div>;
-    }
+    }, [user, navigate]); 
 
     if (!user) {
         return null; 
